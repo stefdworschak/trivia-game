@@ -1,0 +1,2 @@
+namegenerator==1.0.6
+Django==3.0.5
