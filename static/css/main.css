@@ -1,0 +1,85 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat&display=swap');
+
+body {
+    /*background: url('/static/img/577662.jpg');
+    background-size: cover;*/
+    font-family: 'Montserrat', sans-serif;
+    background: rgb(64,1,90);
+    background: linear-gradient(90deg, rgba(64,1,90,1) 0%, rgba(117,3,164,1) 35%, rgba(255,0,222,1) 100%);
+    height:100vh;
+}
+
+.container {
+    height:100%;
+    position: relative;
+}
+
+.row.create-party-row  {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.party-main-header {
+    display: block;
+    font-size: 3.5em;
+}
+
+.party-name, .party-header, .party-main-header {
+    font-family: 'Montserrat', sans-serif;
+    color:#FFFFFF;
+}
+
+.party-name {
+    background: rgba(255,255,255,0.2);
+    border-radius: 20px;
+    padding:5px;
+    font-size: 3.5em;
+    width: 100%;
+}
+
+.party-header {
+    font-size: 2em;
+    text-decoration: underline;
+    margin-bottom:30px;
+    width: 100%;
+}
+
+.create-party {
+    text-align: center;
+    margin:0px;
+    /*justify-content:center;*/
+}
+
+.create-party-btn {
+    width:100%;
+    font-size: 3.5em;
+}
+
+.category-select {
+    width: 100%;
+}
+
+.category-select > select > option {
+    width:100%;
+    font-size: 0.5em; 
+}
+
+select.form-control:not([size]):not([multiple]) {
+    font-size: 2.5em;
+    width:100%;
+    height:auto;
+}
+
+.party-header {
+    text-align:left;
+}
+
+h5.modal-title {
+    font-size: 0.3em;
+}
+.modal-body > .form-group > .form-control {
+    font-size: 0.5em;
+}
+
+

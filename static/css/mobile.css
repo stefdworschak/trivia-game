@@ -1,0 +1,69 @@
+@media only screen and (max-width: 600px) {
+    h5.modal-title {
+        font-size: 2em;
+    }
+    .modal-body > .form-group > .form-control {
+        font-size: 1.5em;
+    }
+}
+
+@media only screen and (min-width: 450px) {
+    h5.modal-title {
+        font-size: 4em;
+    }
+    .modal-body > .form-group > .form-control {
+        font-size: 1.5em;
+    }
+
+    .modal-content, .modal-dialog {
+        max-width: 98%;
+        width: 98%;
+    }
+
+    .modal-dialog {
+        margin: 20px;
+    }
+
+    .party-name {
+        background: rgba(255,255,255,0.2);
+        border-radius: 20px;
+        padding:5px;
+        font-size: 5em;
+        width: 100%;
+    }
+
+    .party-header {
+        font-size: 4em;
+        text-decoration: underline;
+        margin-bottom:30px;
+        width: 100%;
+    }
+
+    .category-select > select > option {
+        width:100%;
+        font-size: 0.5em; 
+    }
+    
+    select.form-control:not([size]):not([multiple]) {
+        font-size: 3.5em;
+        width:100%;
+        height:auto;
+    }
+
+    input#player_name {
+        font-size: 4em; 
+    }
+    button#find_player, button#create_player {
+        font-size: 2.5em;
+        padding-left: 30px;
+        padding-right: 30px;
+        border-radius: 10px;
+    }
+
+    button#join_party {
+        font-size: 3.5em;
+        padding-left: 30px;
+        padding-right: 30px;
+        border-radius: 15px;
+    }
+}

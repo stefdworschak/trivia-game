@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row player-name-row">
+    <div class="col-12">
+
+        <div class="modal" tabindex="-1" role="dialog" id="name_modal">
+            <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title">Choose Player Name</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <form>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="player_name" id="player_name" />
+                        </div>
+                        <div class="form-group">
+                            <button type="button" class="btn btn-warning btn-sm" id="find_player">Find Existing Player</button>
+                            <button type="button" class="btn btn-success btn-sm" id="create_player">Create New Player</button>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="join_party" disabled>Join party</button>
+                    </div>
+                </form>
+            </div>
+            </div>
+        </div>
+    
+    </div>
+</div>
+
+{% endblock %}
