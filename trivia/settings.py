@@ -133,9 +133,9 @@ django_heroku.settings(locals())
 ASGI_APPLICATION = 'trivia.routing.application'
 CHANNEL_LAYERS = {
     'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'BACKEND': "asgi_redis.RedisChannelLayer",
         'CONFIG': {
-            'hosts': [('localhost', 6379)],
+            'hosts': [os.environ.get('REDIS_URL', 'redis://localhost:6379')],
         },
         #'ROUTING': 'party.routing.application',
     }
