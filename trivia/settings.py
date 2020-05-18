@@ -130,13 +130,13 @@ STATICFILES_DIRS = [
 django_heroku.settings(locals())
 
 # Channels
-#ASGI_APPLICATION = 'trivia.routing.application'
+ASGI_APPLICATION = 'trivia.routing.application'
 CHANNEL_LAYERS = {
     'default': {
-        "BACKEND": "asgi_redis.RedisChannelLayer",
+        "BACKEND": "channels_regis.core.RedisChannelLayer",
         'CONFIG': {
             'hosts': [os.environ.get('REDIS_URL', 'redis://172.0.0.1:6379')],
         },
-        'ROUTING': 'trivia.routing.application',
+        #'ROUTING': 'trivia.routing.application',
     }
 }
