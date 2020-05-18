@@ -23,9 +23,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'j%r6dkd7_n@istq3$=)v401&thi8)(^96$y*lh1f*=y)z+r=@#'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -129,14 +129,13 @@ STATICFILES_DIRS = [
 # Activate Django-Heroku.
 django_heroku.settings(locals())
 
-# Channels
-ASGI_APPLICATION = 'trivia.routing.application'
+# Channel settings
 CHANNEL_LAYERS = {
-    'default': {
-        "BACKEND": "channels_regis.core.RedisChannelLayer",
-        'CONFIG': {
-            'hosts': [os.environ.get('REDIS_URL', 'redis://172.0.0.1:6379')],
+    "default": {
+        "BACKEND": "asgi_redis.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [os.environ.get('REDIS_URL', 'redis://localhost:6379')],
         },
-        #'ROUTING': 'trivia.routing.application',
-    }
+        "ROUTING": "trivia.routing.channel_routing",
+    },
 }
