@@ -138,6 +138,7 @@ CHANNEL_LAYERS = {
         'CONFIG': {
             'hosts': [os.environ.get('REDIS_URL', 'redis://172.0.0.1:6379')],
         },
+        'symmetric_encryption_keys': [SECRET_KEY],
         #'ROUTING': 'trivia.routing.application',
     }
 }
