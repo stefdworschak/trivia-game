@@ -1,5 +1,3 @@
-from django.db import models, close_old_connections
-
 import json
 
 # Create you
@@ -7,7 +5,6 @@ class Player(models.Model):
     player_name = models.CharField(max_length=30, unique=True)
     score = models.FloatField()
     is_admin = models.BooleanField()
-    close_old_connections()
 
 class Party(models.Model):
     party_name = models.CharField(max_length=30, unique=True)
@@ -17,7 +14,6 @@ class Party(models.Model):
     num_rounds = models.IntegerField()
     party_type = models.CharField(max_length=255, blank=True)
     party_subtype = models.CharField(max_length=255, blank=True)
-    close_old_connections()
 
     def __str__(self):
         return self.party_name + f" ({self.players.count()} of {self.num_players} players)"
@@ -26,7 +22,6 @@ class Party(models.Model):
 class Round(models.Model):
     completed = models.BooleanField(default=False)
     party = models.ForeignKey(Party, related_name='rounds', on_delete=models.CASCADE)
-    close_old_connections()
 
 class TriviaQuestion(models.Model):
     question_text = models.CharField(max_length=1048, blank=True)
@@ -59,4 +54,3 @@ class TriviaSubmission(models.Model):
     score = models.IntegerField()
     trivia_round = models.ForeignKey(Round, related_name='submission', on_delete=models.CASCADE)
     trivia_question = models.ForeignKey(TriviaQuestion, related_name='question', on_delete=models.CASCADE)
-    close_old_connections()
