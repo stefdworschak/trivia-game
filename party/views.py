@@ -13,6 +13,7 @@ from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.forms.models import model_to_dict
 from django.core import serializers
+from django.db import close_old_connections
 
 from .models import Party, Player, Round, TriviaQuestion, TriviaSubmission
 
@@ -62,6 +63,7 @@ def create_join_party(request):
     #    return redirect('/party')
 
 def party(request, party_id):
+    close_old_connections()
     if not request.session.get('player'):
         return redirect(f'/join/{party_id}')
     player = Player(id=request.session.get('player'))
@@ -72,6 +74,7 @@ def party(request, party_id):
     current_round = len(party.rounds.filter(completed=True)) + 1
     trivia_question = trivia_round.question.all().first()
     answers = ast.literal_eval(trivia_question.question_answers)
+    close_old_connections()
     return render(request, 'party.html', {
                                             'party': party_to_dict(party), 
                                             'round': trivia_round, 
@@ -82,6 +85,7 @@ def party(request, party_id):
 
 
 def submit_question(request, party_id):
+    close_old_connections()
     print("REDIS URL")
     print(os.environ.get('REDIS_URL'))
     if not request.session.get('player'):
@@ -112,7 +116,7 @@ def submit_question(request, party_id):
                 'type': 'chat_message',
                 'message': 'round_complete'})
         return redirect('/party/%s' % party_id)    
-
+    close_old_connections()
     return render(request, 'question.html', {
         'player': player,
         'party_name': party.party_name,
