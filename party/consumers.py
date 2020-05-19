@@ -1,6 +1,7 @@
 # party/consumers.py
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
+from django.db import close_old_connections
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -20,6 +21,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             self.room_group_name,
             self.channel_name
         )
+        close_old_connections()
 
     # Receive message from WebSocket
     async def receive(self, text_data):
@@ -34,6 +36,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 'message': message
             }
         )
+        close_old_connections()
 
     # Receive message from room group
     async def chat_message(self, event):
@@ -44,3 +47,4 @@ class ChatConsumer(AsyncWebsocketConsumer):
             'type': 'chat_message',
             'message': message
         }))
+        close_old_connections()
