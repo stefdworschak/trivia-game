@@ -31,35 +31,35 @@ def new_party(request):
 
 def create_or_join_party(request):
     """ Checks if party exists and joins player to party or creates new party """
-    try:
-        data = request.POST
-        player = Player.objects.get(player_name=data.get('player'))
-        party = Party.objects.filter(party_name=data.get('party_id'))
-        if party.count() == 0:
-            p = Party(party_name=data.get('party_id'),
-                        num_players=data.get('num_players'),
-                        admin=player,
-                        num_rounds=data.get('num_rounds'),
-                        party_type=data.get('party_type'),
-                        party_subtype=data.get('trivia_category'))
-            p.save()
+    #try:
+    data = request.POST
+    player = Player.objects.get(player_name=data.get('player'))
+    party = Party.objects.filter(party_name=data.get('party_id'))
+    if party.count() == 0:
+        p = Party(party_name=data.get('party_id'),
+                    num_players=data.get('num_players'),
+                    admin=player,
+                    num_rounds=data.get('num_rounds'),
+                    party_type=data.get('party_type'),
+                    party_subtype=data.get('trivia_category'))
+        p.save()
+        p.players.add(player)
+        add_questions(p)
+        request.session['player'] = player.id
+        return redirect(f'/party/{data.get("party_id")}')
+    else:
+        p = Party.objects.get(party_name=data.get('party_id'))
+        if len(p.players.all()) < p.num_players:
             p.players.add(player)
-            add_questions(p)
+            request.session['player'] = player.id
+            return redirect(f'/party/{data.get("party_id")}')
+        elif p.players.filter(id=player.id).exists():
             request.session['player'] = player.id
             return redirect(f'/party/{data.get("party_id")}')
         else:
-            p = Party.objects.get(party_name=data.get('party_id'))
-            if len(p.players.all()) < p.num_players:
-                p.players.add(player)
-                request.session['player'] = player.id
-                return redirect(f'/party/{data.get("party_id")}')
-            elif p.players.filter(id=player.id).exists():
-                request.session['player'] = player.id
-                return redirect(f'/party/{data.get("party_id")}')
-            else:
-                return redirect('/?error=party_full')
-    except:
-        return redirect('/party')
+            return redirect('/?error=party_full')
+    #except:
+    #    return redirect('/party')
 
 def party(request, party_id):
     if not request.session.get('player'):
@@ -192,7 +192,7 @@ def add_questions(party):
         questions = res.json()['results']
     print("QUESTIONS: ", len(questions))
     for question in questions:
-        party_round = Round(party=party)
+        party_round = Round(party=party, num_submissions=0)
         party_round.save()
         trivia_question = TriviaQuestion(
             question_text=question.get('question'),
