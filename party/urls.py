@@ -8,6 +8,8 @@ urlpatterns = [
      path('join/create_player', views.create_player, name='create_player'),
      path('join/<str:party_id>', views.join_party, name='join_party'),
      path('join/<str:party_id>', views.join_party, name='join_party'),
+     path('start/<str:party_id>', views.start_screen, name='start_screen'),
+     path('finish/<str:party_id>', views.finish_screen, name='finish_screen'),
      path('create_or_join_party', views.create_or_join_party,
           name='create_or_join_party'),
      path('party/<str:party_id>', views.party, name='party'),

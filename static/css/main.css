@@ -140,6 +140,45 @@ input#player_name {
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.4);
 }
 
+.players-list {
+    margin-top:50px;
+}
+
+.finished-players-list {
+    margin-top:20px;
+}
+
+.players-list ul, .finished-players-list ul {
+    margin:0px;
+    padding:0px;
+    list-style-type: none;
+}
+
+.players-list ul li {
+    margin:10px 0px 0px 0px;
+    list-style-type: none;
+}
+
+.finished-players-list ul li {
+    margin:10px auto 0px auto;
+    list-style-type: none;
+    width:50%;
+}
+
+.username {
+    font-size:1.5em;
+}
+
+.party-starting{
+    margin-top:30px;
+}
+
+.first-place-img {
+    width: 50%;
+    display: block;
+    margin:0px auto 0px auto;
+}
+
 @media only screen and (min-width: 600px) {
     .modal-body > .form-group > .form-control {
         font-size: 0.5em;
