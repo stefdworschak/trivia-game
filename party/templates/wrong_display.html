@@ -4,13 +4,16 @@
     <div class="container">
     <div class="row player-name-row">
         <div class="col-12">
-            <img src="{% static 'img/opps.png' %}" />
+            <div class="text-center">
+                <img src="{% static 'img/oops.png' %}" width="100%" />
+                <h3>Sorry, but that was the wrong answer!</h3>
+            </div>
             {{ party_name|json_script:"party_name" }}
             <script>
                 setTimeout(function(){
                     const party_name = JSON.parse(document.getElementById('party_name').textContent);   
                     window.location.replace('/party/'+party_name);
-                }, 3000)
+                }, 2000)
             </script>
         </div>
 

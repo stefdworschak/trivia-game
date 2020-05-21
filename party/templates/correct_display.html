@@ -1,15 +1,19 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block content %}
     <div class="container">
     <div class="row player-name-row">
         <div class="col-12">
-            <img src="{% static 'img/yeah.png' %}" />
+            <div class="text-center">
+                <img src="{% static 'img/yeah.png' %}" width="100%" />
+                <h3>You picked the right answer!</h3>
+            </div>
             {{ party_name|json_script:"party_name" }}
             <script>
                 setTimeout(function(){
                     const party_name = JSON.parse(document.getElementById('party_name').textContent);   
                     window.location.replace('/party/'+party_name);
-                }, 3000)
+                }, 2000)
             </script>
         </div>
 
