@@ -1,10 +1,15 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block content %}
     <div class="container">
     <div class="row player-name-row">
         <div class="col-12">
             
-            <h1>Answer submitted. Waiting for the other players</h1>
+            <div class="text-center">
+                <img src="{% static 'img/waiting.png' %}" width="100%" />
+                <h3>Answer submitted. Waiting for the other players</h3>
+            </div>
+            
             
             {{ party_name|json_script:"party_name" }}
             <script>
@@ -23,7 +28,7 @@
                     console.log(data);
                     if(data.message == 'round_complete'){
                         if(data.submission_score){
-                            
+
                         }
                         window.location.replace("/party/" + party_name)
                     }
