@@ -29,7 +29,6 @@ def new_party(request):
     return render(request, 'new.html', 
                   {"hex_digest": namegenerator.gen() + '-' + hex_digest[-4:]})
 
-
 def correct_submission(request, party_id):
     return render(request, 'correct_display.html', {'party_name': party_id})
 
@@ -72,7 +71,6 @@ def finish_screen(request, party_id):
 
     return render(request, 'finish_screen.html', {
         'party': party, 'winners': winners, 'other_players': other_players })
-
 
 def create_or_join_party(request):
     """ Checks if party exists and joins player to party or creates new party """
@@ -168,6 +166,8 @@ def check_total_submissions(party_type, party_round):
 
 
 def submit_question(request, party_id):
+    print("REDIS URL")
+    print(os.environ.get('REDIS_URL'))
     if not request.session.get('player'):
         return redirect('/')
     if not request.POST:

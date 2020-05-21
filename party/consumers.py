@@ -47,7 +47,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         # Send message to WebSocket
         await self.send(text_data=json.dumps({
             'type': 'chat_message',
-            'submission_score': submission_score,
+            'submission_score': submission_score, 
             'message': message,
             'player_name': player_name,
         }))
