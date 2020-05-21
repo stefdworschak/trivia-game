@@ -130,6 +130,15 @@ input#player_name {
     background:#28a745!important;
 }
 
+.player-score {
+    width:100%;
+    padding:5px;
+    background: #202c36;
+    color: white;
+    -moz-box-shadow: 0 4px 4px rgba(0, 0, 0, 0.4);
+    -webkit-box-shadow: 0 4px 4px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.4);
+}
 
 @media only screen and (min-width: 600px) {
     .modal-body > .form-group > .form-control {
