@@ -14,7 +14,7 @@
         <br />
         {% for answer in answers %}
         <div class="row answers">
-            <div class="col-12"><button class="btn btn-primary answer" style="width:100%">{{answer}}</button></div>
+            <div class="col-12"><button class="btn btn-primary answer" style="width:100%">{{answer|safe}}</button></div>
         </div>
         {% endfor %}
         <div class="row submit">

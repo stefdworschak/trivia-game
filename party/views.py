@@ -1,6 +1,7 @@
 import ast
 import json
 import hashlib
+import os
 from datetime import datetime
 import random
 import requests
@@ -71,6 +72,7 @@ def party(request, party_id):
     current_round = len(party.rounds.filter(completed=True)) + 1
     trivia_question = trivia_round.question.all().first()
     answers = ast.literal_eval(trivia_question.question_answers)
+
     return render(request, 'party.html', {
                                             'party': party_to_dict(party), 
                                             'round': trivia_round, 
@@ -81,6 +83,8 @@ def party(request, party_id):
 
 
 def submit_question(request, party_id):
+    print("REDIS URL")
+    print(os.environ.get('REDIS_URL'))
     if not request.session.get('player'):
         return redirect('/')
     score = 0
