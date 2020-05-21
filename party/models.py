@@ -12,25 +12,33 @@ class Player(models.Model):
         return self.player_name
 
 class Party(models.Model):
-    party_name = models.CharField(max_length=30, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    party_name = models.CharField(max_length=255, unique=True)
     admin = models.ForeignKey(Player, on_delete=models.CASCADE, related_name="admin_id")
     players = models.ManyToManyField(Player, blank=True)
     num_players = models.IntegerField()
     num_rounds = models.IntegerField()
     party_type = models.CharField(max_length=255, blank=True)
     party_subtype = models.CharField(max_length=255, blank=True)
+    status = models.IntegerField(default=0)
+    
 
     def __str__(self):
         return self.party_name + f" ({self.players.count()} of {self.num_players} players)"
 
 
 class Round(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     completed = models.BooleanField(default=False)
     party = models.ForeignKey(Party, related_name='rounds', on_delete=models.CASCADE)
     num_submissions = models.IntegerField()
     skip_votes = models.ManyToManyField(Player, blank=True)
 
 class TriviaQuestion(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     question_text = models.CharField(max_length=1048, blank=True)
     question_answers = models.CharField(max_length=1048, blank=True)
     correct_answer = models.CharField(max_length=255, blank=True)
@@ -56,6 +64,8 @@ class TriviaQuestion(models.Model):
 
 
 class TriviaSubmission(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     player = models.ForeignKey(Player, related_name='submissions', on_delete=models.CASCADE)
     submitted_answer = models.CharField(max_length=255, blank=True)
     score = models.IntegerField()

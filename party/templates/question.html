@@ -21,9 +21,9 @@
                     + party_name
                     + '/';
                 console.log(connection_uri)
-                const chatSocket = new WebSocket(connection_uri);
+                const partySocket = new WebSocket(connection_uri);
         
-                chatSocket.onmessage = function(e) {
+                partySocket.onmessage = function(e) {
                     const data = JSON.parse(e.data);
                     console.log(data);
                     if(data.message == 'round_complete'){
@@ -34,8 +34,8 @@
                     }
                 };
         
-                chatSocket.onclose = function(e) {
-                    console.error('Chat socket closed unexpectedly');
+                partySocket.onclose = function(e) {
+                    console.error('Party socket closed unexpectedly');
                 };
             </script>
         </div>
