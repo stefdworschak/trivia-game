@@ -41,6 +41,11 @@ def wrong_submission(request, party_id):
 def start_screen(request, party_id):
     party = Party.objects.get(party_name=party_id)
     players = party.players.all()
+    print("STATUS", party.status==1)
+    if party.status == 1:
+        return redirect(f'/party/{party_id}')
+    elif party.status == 2:
+        return redirect(f'/finish/{party_id}')
     return render(request, 'start_screen.html', {
         'party': party })
 
@@ -91,6 +96,7 @@ def create_or_join_party(request):
         return redirect(f'/party/{data.get("party_id")}')
     else:
         p = Party.objects.get(party_name=party_id)
+        msg = ''
         if len(p.players.all()) < p.num_players:
             p.players.add(player)
             request.session['player'] = player.id
@@ -99,15 +105,18 @@ def create_or_join_party(request):
                 print("status = 1")
                 p_upate = Party.objects.filter(party_name=party_id)
                 p_upate.update(status=1)
-                channel_layer = channels.layers.get_channel_layer()
-                async_to_sync(channel_layer.group_send)('chat_%s' % party_id, {
-                    'type': 'chat_message',
-                    'submission_score': None,
-                    'message': 'game_starts'})
+                msg = 'game_starts'
+            channel_layer = channels.layers.get_channel_layer()
+            async_to_sync(channel_layer.group_send)('chat_%s' % party_id, {
+                'type': 'chat_message',
+                'submission_score': None,
+                'message': msg,
+                'player_name': player.player_name,
+                })
             return redirect(f'/start/{data.get("party_id")}')
         elif p.players.filter(id=player.id).exists():
             request.session['player'] = player.id
-            return redirect(f'/start/{data.get("party_id")}')
+            return redirect(f'/party/{data.get("party_id")}')
         else:
             return redirect('/?error=party_full')
     #except:
@@ -183,7 +192,9 @@ def submit_question(request, party_id):
         async_to_sync(channel_layer.group_send)('chat_%s' % party_id, {
                 'type': 'chat_message',
                 'submission_score': submission_score,
-                'message': 'round_complete'})
+                'message': 'round_complete',
+                'player_name': player.player_name,
+                })
         return redirect('/party/%s' % party_id)    
 
     return render(request, 'question.html', {
@@ -245,9 +256,9 @@ def add_questions(party):
     rounds = int(party.num_rounds) * 2
     print("QUESTIONS: ", rounds)
     if party.party_subtype != 'any':
-        category = f'?category={party.party_subtype}'
-    
+        category = f'&category={party.party_subtype}'
     trivia_url = f'https://opentdb.com/api.php?amount={rounds}&type=multiple{category}'
+    print(trivia_url)
     res = requests.get(trivia_url)
     if res.status_code == 200:
         questions = res.json()['results']
