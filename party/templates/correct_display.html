@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container">
+    <div class="row player-name-row">
+        <div class="col-12">
+            <img src="{% static 'img/yeah.png' %}" />
+            {{ party_name|json_script:"party_name" }}
+            <script>
+                setTimeout(function(){
+                    const party_name = JSON.parse(document.getElementById('party_name').textContent);   
+                    window.location.replace('/party/'+party_name);
+                }, 3000)
+            </script>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

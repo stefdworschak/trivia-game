@@ -22,6 +22,9 @@
                     const data = JSON.parse(e.data);
                     console.log(data);
                     if(data.message == 'round_complete'){
+                        if(data.submission_score){
+                            
+                        }
                         window.location.replace("/party/" + party_name)
                     }
                 };

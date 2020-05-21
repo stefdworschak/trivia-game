@@ -27,6 +27,12 @@ def new_party(request):
     hex_digest = gen_hash.hexdigest()
     return render(request, 'new.html', 
                   {"hex_digest": namegenerator.gen() + '-' + hex_digest[-4:]})
+
+def correct_submission(request, party_id):
+    return render(request, 'correct_display.html', {'party_name': party_id})
+
+def wrong_submission(request, party_id):
+    return render(request, 'wrong_display.html', {'party_name': party_id})
             
 
 def create_or_join_party(request):
@@ -103,6 +109,8 @@ def check_total_submissions(party_type, party_round):
 def submit_question(request, party_id):
     if not request.session.get('player'):
         return redirect('/')
+    if not request.POST:
+        return redirect('/party/%s' % party_id)
     score = 0
     player = Player(id=request.session.get('player'))
     party = Party.objects.get(party_name=party_id)
