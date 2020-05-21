@@ -14,7 +14,7 @@ class Player(models.Model):
 class Party(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    party_name = models.CharField(max_length=30, unique=True)
+    party_name = models.CharField(max_length=255, unique=True)
     admin = models.ForeignKey(Player, on_delete=models.CASCADE, related_name="admin_id")
     players = models.ManyToManyField(Player, blank=True)
     num_players = models.IntegerField()
