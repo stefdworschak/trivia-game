@@ -9,11 +9,11 @@
             {{ party_name|json_script:"party_name" }}
             <script>
                 
-                const roomName = JSON.parse(document.getElementById('party_name').textContent);
+                const party_name = JSON.parse(document.getElementById('party_name').textContent);
                 const connection_uri = 'wss://'
                     + window.location.host
                     + '/ws/party/'
-                    + roomName
+                    + party_name
                     + '/';
                 console.log(connection_uri)
                 const chatSocket = new WebSocket(connection_uri);
@@ -22,7 +22,7 @@
                     const data = JSON.parse(e.data);
                     console.log(data);
                     if(data.message == 'round_complete'){
-                        window.location.replace("/party/" + roomName)
+                        window.location.replace("/party/" + party_name)
                     }
                 };
         

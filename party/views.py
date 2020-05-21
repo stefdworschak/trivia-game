@@ -109,7 +109,7 @@ def submit_question(request, party_id):
     party_round = Round.objects.get(id=request.POST.get('round_id'))
     trivia_question = TriviaQuestion.objects.get(id=request.POST.get('question_id'))
     total_submissions = check_total_submissions(party.party_type, party_round)
-    new_submission = create_submission(
+    submission_score = create_submission(
         party_type=party.party_type, 
         options={
             'party_round': party_round,
@@ -122,6 +122,7 @@ def submit_question(request, party_id):
         channel_layer = channels.layers.get_channel_layer()
         async_to_sync(channel_layer.group_send)('chat_%s' % party_id, {
                 'type': 'chat_message',
+                'submission_score': submission_score,
                 'message': 'round_complete'})
         return redirect('/party/%s' % party_id)    
 

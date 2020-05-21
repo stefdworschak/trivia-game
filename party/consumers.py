@@ -25,12 +25,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
+        submission_score = text_data_json['submission_score']
 
         # Send message to room group
         await self.channel_layer.group_send(
             self.room_group_name,
             {
                 'type': 'chat_message',
+                'submission_score': submission_score,
                 'message': message
             }
         )
@@ -38,9 +40,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
     # Receive message from room group
     async def chat_message(self, event):
         message = event['message']
+        submission_score = event['submission_score']
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({
             'type': 'chat_message',
+            'submission_score': submission_score,
             'message': message
         }))

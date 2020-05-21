@@ -16,5 +16,4 @@ def create_new_trivia_submission(party_round, player, question_id, answer):
             submitted_answer=answer,
             score=score)
         trivia_submission.save()
-        return True
-    return False
+    return score
