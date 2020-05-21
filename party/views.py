@@ -107,6 +107,8 @@ def check_total_submissions(party_type, party_round):
 
 
 def submit_question(request, party_id):
+    print("REDIS URL")
+    print(os.environ.get('REDIS_URL'))
     if not request.session.get('player'):
         return redirect('/')
     if not request.POST:
