@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+{% include '_invite_link.html' %}
+    <div class="container">
+    <div class="row player-name-row">
+        <div class="col-12">
+            
+            <div class="text-center" id="waiting">
+                <img src="{% static 'img/waiting.png' %}" width="100%" />
+                <h3>Answer submitted. Waiting for the other players</h3>
+            </div>
+            <div class="text-center" id="correct" style="display:none">
+                <img src="{% static 'img/yeah.png' %}" width="100%" />
+                <h3>You picked the right answer!</h3>
+            </div>
+            <div class="text-center" id="wrong" style="display:none">
+                <img src="{% static 'img/oops.png' %}" width="100%" />
+                <h3>Sorry, but the right answer was: <br /> 
+                    <strong><span id="correct-answer"></span></strong>
+                </h3>
+            </div>
+            {{ party.party_name|json_script:"party_name" }}
+            {{ player.player_name|json_script:"player_name" }}
+            <script>
+                const queryString = window.location.search;
+                const searchParams = new URLSearchParams(queryString);
+                const get_submission = searchParams.get("submission");
+                const get_correct_answer = searchParams.get("correct_answer");
+                processSubmission(get_submission, get_correct_answer);
+
+                const score = queryString.split('=')
+                const party_name = JSON.parse(document.getElementById('party_name').textContent);
+                const player_name = JSON.parse(document.getElementById('player_name').textContent);
+                const connection_uri = 'wss://'
+                    + window.location.host
+                    + '/ws/party/'
+                    + party_name
+                    + '/';
+                console.log(connection_uri)
+                const partySocket = new WebSocket(connection_uri);
+        
+                partySocket.onmessage = function(e) {
+                    const data = JSON.parse(e.data);
+                    console.log(data);
+                    if(data.message == 'round_complete'){
+                        console.log(data.submission_score)
+                        if(data.submission_score != undefined && data.submission_score != null){
+                            try{
+                                const submission_score = JSON.parse(data.submission_score);
+                                processSubmission(
+                                    submission_score.submissions[player_name],
+                                    submission_score.correct_answer
+                                )
+                            } catch(e){
+                                console.log(e)
+                                setTimeout(function(){
+                                    window.location.replace('/party/'+party_name);
+                                }, 2000)
+                            }
+                            
+                        } else {
+                            console.log(data.submission_score)
+                        }
+                        
+                    }
+                };
+        
+                partySocket.onclose = function(e) {
+                    console.error('Party socket closed unexpectedly');
+                };
+
+
+                function processSubmission(submission, correct_answer){
+                    if(submission == 1){
+                        // Correct
+                        $('#waiting').hide();
+                        $('#correct').show();
+                        setTimeout(function(){
+                            window.location.replace('/party/'+party_name);
+                        }, 2000)
+                    } else if (submission == 0) {
+                        // Incorrect
+                        $('#waiting').hide();
+                        $('#correct-answer').text(correct_answer)
+                        $('#wrong').show();
+                        setTimeout(function(){
+                            window.location.replace('/party/'+party_name);
+                        }, 2000)
+                    }
+                }
+            </script>
+        </div>
+    </div>
+</div>
+{% endblock %}
