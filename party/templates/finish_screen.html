@@ -37,20 +37,44 @@
                 {% endif %}
             </div>
 
+            <div class="button-menu text-center">
+                <form action="/recreate_party" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="party_id" value="{{party.party_name}}" />
+                    <button role="submit" class="btn btn-success">Play Again (same settings)</button>
+                </form>
+                <a role="button" href="/" class="btn btn-primary">Create New Party</a>
+            </div>
+            <div class="party-starting"></div>
+
             <div class="party-starting text-center"></div>
             {{ party.party_name|json_script:"party_name" }}
-            {{ party.num_players|json_script:"num_players" }}
-            {{party.players.all|length|json_script:"joined_players" }}
-            <!--<script>
+            <script>
                 let party_name = JSON.parse(document.getElementById('party_name').textContent);
-                let num_players = JSON.parse(document.getElementById('num_players').textContent);
-                let joined_players = JSON.parse(document.getElementById('joined_players').textContent);
-                if(num_players == joined_players){
-                    timer(10);
-                }
+                const connection_uri = 'wss://'
+                    + window.location.host
+                    + '/ws/party/'
+                    + party_name
+                    + '/';
+                const partySocket = new WebSocket(connection_uri);
+                
+                partySocket.onmessage = function(e) {
+                    const data = JSON.parse(e.data);
+                    if(data.message == 'party_recreated'){
+                        timer(10);
+                    }
+                    if(data.player_name != null && data.player_name != undefined) {
+                        appendIfNotExists(data.player_name);
+                    }
+
+                };
+        
+                partySocket.onclose = function(e) {
+                    console.error('Party socket closed unexpectedly');
+                };
 
                 function timer(seconds){
-                    $('.party-starting').text(`Starting in ${seconds}s`)
+                    $('.party-starting').text(`New Party starting in ${seconds}s`)
                     if(seconds > 0){
                         let s = seconds-1;
                         setTimeout(function(){
@@ -60,7 +84,7 @@
                         window.location.replace('/party/'+party_name);
                     }
                 }
-            </script>-->
+            </script>
 
         </div>
     </div>

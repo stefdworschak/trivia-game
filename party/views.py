@@ -56,6 +56,9 @@ def start_screen(request, party_id):
 
 def finish_screen(request, party_id):
     party = Party.objects.get(party_name=party_id)
+    finished_rounds = Round.objects.filter(party=party, completed=True)
+    if len(finished_rounds) < party.num_rounds:
+        return redirect(f'/party/{party_id}')
     Party.objects.filter(party_name=party_id).update(status=2)
     players = party.players.all()
     player_scores = []
@@ -76,6 +79,38 @@ def finish_screen(request, party_id):
 
     return render(request, 'finish_screen.html', {
         'party': party, 'winners': winners, 'other_players': other_players })
+
+def recreate_party(request):
+    if not request.POST:
+        return redirect('/')
+    party_id = request.POST.get('party_id')
+    party = Party.objects.get(party_name=party_id)
+    gen_hash = hashlib.sha256()
+    gen_hash.update(str(datetime.now()).encode('utf-8'))
+    hex_digest = gen_hash.hexdigest()
+    new_party_id = namegenerator.gen() + '-' + hex_digest[-4:]
+    p = Party(party_name=new_party_id,
+                num_players=party.num_players,
+                admin=party.admin,
+                num_rounds=party.num_rounds,
+                party_type=party.party_type,
+                party_subtype=party.party_subtype)
+    p.save()
+    for player in party.players.all():
+        print(player.player_name)
+        pl = Player.objects.get(player_name=player.player_name)
+        p.players.add(pl)
+    add_questions(p)
+    Party.objects.filter(party_name=new_party_id).update(status=1)
+    msg="party_recreated"
+    channel_layer = channels.layers.get_channel_layer()
+    async_to_sync(channel_layer.group_send)('chat_%s' % party_id, {
+        'type': 'chat_message',
+        'submission_score': new_party_id,
+        'message': msg,
+        'player_name': '',
+        })
+    return redirect(f'/party/{new_party_id}')
 
 def create_or_join_party(request):
     """ Checks if party exists and joins player to party or creates new party """
@@ -207,8 +242,6 @@ def submit_question(request, party_id):
             'question_id': request.POST.get('round_id'),
             'answer': request.POST.get('answer'),
         })
-    print(len(total_submissions))
-    print(party.num_players)
     if len(total_submissions) == party.num_players:
         Round.objects.filter(id=request.POST.get('round_id')).update(completed=True)
         submission_scores = create_submission_scores(party_round)

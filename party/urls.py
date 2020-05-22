@@ -13,6 +13,8 @@ urlpatterns = [
      path('waiting/<str:party_id>', views.waiting_screen, name='waiting_screen'),
      path('create_or_join_party', views.create_or_join_party,
           name='create_or_join_party'),
+     path('recreate_party', views.recreate_party,
+          name='recreate_party'),
      path('party/<str:party_id>', views.party, name='party'),
      path('party/<str:party_id>/submission', 
                views.submit_question, name='submission'),
