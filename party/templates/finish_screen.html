@@ -41,7 +41,7 @@
                 <form action="/recreate_party" method="POST">
                     {% csrf_token %}
                     <input type="hidden" name="party_id" value="{{party.party_name}}" />
-                    <button role="submit" class="btn btn-success">Play Again (same settings)</button>
+                    <button role="submit" class="btn btn-success" id="play-again">Play Again (same settings)</button>
                 </form>
                 <a role="button" href="/" class="btn btn-primary">Create New Party</a>
             </div>
@@ -61,6 +61,7 @@
                 partySocket.onmessage = function(e) {
                     const data = JSON.parse(e.data);
                     if(data.message == 'party_recreated'){
+                        $('#play-again').text("Playing again").attr('disabled', true);
                         new_party_name = data.submission_score;
                         timer(10);
                     }
