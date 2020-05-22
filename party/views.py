@@ -242,6 +242,9 @@ def submit_question(request, party_id):
             'question_id': request.POST.get('round_id'),
             'answer': request.POST.get('answer'),
         })
+
+    print("TOTAL SUBMISSIONS", len(total_submissions))
+    print("TOTAL SUBMISSIONS", party.num_players)
     if len(total_submissions) == party.num_players:
         Round.objects.filter(id=request.POST.get('round_id')).update(completed=True)
         submission_scores = create_submission_scores(party_round)
