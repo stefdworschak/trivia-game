@@ -45,12 +45,12 @@
                 </form>
                 <a role="button" href="/" class="btn btn-primary">Create New Party</a>
             </div>
-            <div class="party-starting"></div>
 
             <div class="party-starting text-center"></div>
             {{ party.party_name|json_script:"party_name" }}
             <script>
                 let party_name = JSON.parse(document.getElementById('party_name').textContent);
+                let new_party_name = "";
                 const connection_uri = 'wss://'
                     + window.location.host
                     + '/ws/party/'
@@ -61,12 +61,9 @@
                 partySocket.onmessage = function(e) {
                     const data = JSON.parse(e.data);
                     if(data.message == 'party_recreated'){
+                        new_party_name = data.submission_score;
                         timer(10);
                     }
-                    if(data.player_name != null && data.player_name != undefined) {
-                        appendIfNotExists(data.player_name);
-                    }
-
                 };
         
                 partySocket.onclose = function(e) {
@@ -81,7 +78,7 @@
                             timer(s);
                         }, 1000);
                     } else {
-                        window.location.replace('/party/'+party_name);
+                        window.location.replace('/party/'+new_party_name);
                     }
                 }
             </script>
