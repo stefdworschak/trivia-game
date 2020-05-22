@@ -9,6 +9,13 @@
             <div class="text-center" id="waiting">
                 <img src="{% static 'img/waiting.png' %}" width="100%" />
                 <h3>Answer submitted. Waiting for the other players</h3>
+
+                <div class="waiting-btns">
+                    <a role="button" href="/party/{{party.party_name}}"
+                        class="btn btn-success" id="refresh">Refresh</a>
+                    <a role="button"  href="/join/{{party.party_name}}"
+                       class="btn btn-warning" id="rejoin">Rejoin Party</a>
+                </div>
             </div>
             <div class="text-center" id="correct" style="display:none">
                 <img src="{% static 'img/yeah.png' %}" width="100%" />
