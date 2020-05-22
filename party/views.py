@@ -158,7 +158,7 @@ def party(request, party_id):
                                             'player_score': player_score})
 
 def create_submission(party_type, options={}):
-    submission = False
+    submission = 0
     if party_type == 'trivia':
         submission = create_new_trivia_submission(
             party_round=options.get('party_round'), 
@@ -210,7 +210,6 @@ def submit_question(request, party_id):
     if len(total_submissions) == party.num_players:
         Round.objects.filter(id=request.POST.get('round_id')).update(completed=True)
         submission_scores = create_submission_scores(party_round)
-        print(submission_scores)
         channel_layer = channels.layers.get_channel_layer()
         async_to_sync(channel_layer.group_send)('chat_%s' % party_id, {
                 'type': 'chat_message',
@@ -218,7 +217,7 @@ def submit_question(request, party_id):
                 'message': 'round_complete',
                 'player_name': player.player_name,
                 })
-        return redirect(f'/waiting/{party_id}')    
+        return redirect(f'/waiting/{party_id}?submission={int(submission_score)}&correct_answer={trivia_question.correct_answer}')    
 
     return redirect(f'/waiting/{party_id}')
 
