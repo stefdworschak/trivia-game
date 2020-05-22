@@ -26,7 +26,7 @@
             <br />
             {% for answer in answers %}
             <div class="row answers">
-                <div class="col-12"><button class="btn btn-primary answer" style="width:100%">{{answer|safe}}</button></div>
+                <div class="col-12"><button class="btn btn-primary answer" style="width:100%" data-item-value="{{answer}}">{{answer|safe}}</button></div>
             </div>
             {% endfor %}
             <div class="row submit">
@@ -47,7 +47,7 @@
                 $('.answer').click(function(){
                     $('.answer').removeClass('selected_answer');
                     $(this).addClass('selected_answer');
-                    $('#confirmed_answer').val($(this).text());
+                    $('#confirmed_answer').val($(this).data('item-value'));
                 })
                 $('#submitAnswerForm').submit(function(event){
                     if($('#confirmed_answer').val() == ''){

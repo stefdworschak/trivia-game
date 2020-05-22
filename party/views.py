@@ -1,6 +1,7 @@
 import ast
 import json
 import hashlib
+import logging
 from operator import itemgetter
 import os
 from datetime import datetime
@@ -20,6 +21,8 @@ from .models import Party, Player, Round, TriviaQuestion, TriviaSubmission
 from .game_modes.trivia import create_new_trivia_submission
 
 import namegenerator
+
+logger = logging.getLogger(__name__)
 
 
 def new_party(request):
@@ -242,6 +245,9 @@ def submit_question(request, party_id):
             'question_id': request.POST.get('round_id'),
             'answer': request.POST.get('answer'),
         })
+
+    logger.debug("TOTAL SUBMISSIONS", len(total_submissions))
+    logger.debug("TOTAL SUBMISSIONS", party.num_players)
     if len(total_submissions) == party.num_players:
         Round.objects.filter(id=request.POST.get('round_id')).update(completed=True)
         submission_scores = create_submission_scores(party_round)
