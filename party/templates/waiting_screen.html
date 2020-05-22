@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <div class="container">
+    <div class="row player-name-row">
+        <div class="col-12">
+            
+            <div class="text-center" id="waiting">
+                <img src="{% static 'img/waiting.png' %}" width="100%" />
+                <h3>Answer submitted. Waiting for the other players</h3>
+            </div>
+            <div class="text-center" id="correct" style="display:none">
+                <img src="{% static 'img/yeah.png' %}" width="100%" />
+                <h3>You picked the right answer!</h3>
+            </div>
+            <div class="text-center" id="wrong" style="display:none">
+                <img src="{% static 'img/oops.png' %}" width="100%" />
+                <h3>Sorry, but the right answer was: '<span id="correct-answer"></span>'
+                </h3>
+            </div>
+            {{ party.party_name|json_script:"party_name" }}
+            {{ player.player_name|json_script:"player_name" }}
+            <script>
+                
+                const party_name = JSON.parse(document.getElementById('party_name').textContent);
+                const player_name = JSON.parse(document.getElementById('player_name').textContent);
+                const connection_uri = 'wss://'
+                    + window.location.host
+                    + '/ws/party/'
+                    + party_name
+                    + '/';
+                console.log(connection_uri)
+                const partySocket = new WebSocket(connection_uri);
+        
+                partySocket.onmessage = function(e) {
+                    const data = JSON.parse(e.data);
+                    console.log(data);
+                    if(data.message == 'round_complete'){
+                        if(data.submission_score){
+                            try{
+                                const submission_score = JSON.parse(submission_score);
+                                if(submission_score.submissions[player_name] == 1){
+                                    // Correct
+                                    $('#waiting').hide();
+                                    $('#correct').show();
+                                } else {
+                                    // Incorrect
+                                    $('#waiting').hide();
+                                    $('#correct-answer').text(submission_score.correct_answer)
+                                    $('#wrong').show();
+                                }
+                            } catch(e){
+                                console.log(e)
+                            }
+                            setTimeout(function(){
+                                window.location.replace('/party/'+party_name);
+                            }, 2000)
+                        }
+                        
+                    }
+                };
+        
+                partySocket.onclose = function(e) {
+                    console.error('Party socket closed unexpectedly');
+                };
+            </script>
+        </div>
+    </div>
+</div>
+{% endblock %}

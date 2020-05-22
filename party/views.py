@@ -32,18 +32,23 @@ def new_party(request):
 def correct_submission(request, party_id):
     return render(request, 'correct_display.html', {'party_name': party_id})
 
-
 def wrong_submission(request, party_id):
     return render(request, 'wrong_display.html', {'party_name': party_id})
 
+def waiting_screen(request, party_id):
+    party = Party.objects.get(party_name=party_id)
+    player = Player.objects.get(id=request.session.get('player'))
+    return render(request, 'waiting_screen.html', {
+        'party': party,
+        'player': player,
+    })
 
 def start_screen(request, party_id):
     party = Party.objects.get(party_name=party_id)
     players = party.players.all()
-    print("STATUS", party.status==1)
-    if party.status == 1:
-        return redirect(f'/party/{party_id}')
-    elif party.status == 2:
+    #if party.status == 1:
+    #    return redirect(f'/party/{party_id}')
+    if party.status == 2:
         return redirect(f'/finish/{party_id}')
     return render(request, 'start_screen.html', {
         'party': party })
@@ -100,7 +105,6 @@ def create_or_join_party(request):
             request.session['player'] = player.id
             p = Party.objects.get(party_name=party_id)
             if len(p.players.all()) == p.num_players:
-                print("status = 1")
                 p_upate = Party.objects.filter(party_name=party_id)
                 p_upate.update(status=1)
                 msg = 'game_starts'
@@ -136,6 +140,13 @@ def party(request, party_id):
     trivia_question = party_round.question.all().first()
     answers = ast.literal_eval(trivia_question.question_answers)
     player_score = calculate_player_score(player, party)
+    player_submissions = check_party_player_submissions( 
+        party=party, 
+        player=player)
+    print("ROUNDS", current_round - 1)
+    print("SUBMISSIONS", player_submissions)
+    if current_round == player_submissions:
+        return redirect(f'/waiting/{party_id}')
     return render(request, 'party.html', {
                                             'party': party_to_dict(party), 
                                             'party_name': party.party_name,
@@ -163,6 +174,16 @@ def check_total_submissions(party_type, party_round):
             party_round=party_round)
     return submissions
 
+def check_party_player_submissions(party, player):
+    submissions = 0
+    if party.party_type == 'trivia':
+        rounds = party.rounds.filter().all()
+        trivia_submissions = TriviaSubmission.objects.filter(
+            party_round__in=rounds,
+            player=player
+        )
+        return len(trivia_submissions)
+    return submissions
 
 
 def submit_question(request, party_id):
@@ -188,19 +209,34 @@ def submit_question(request, party_id):
         })
     if len(total_submissions) == party.num_players:
         Round.objects.filter(id=request.POST.get('round_id')).update(completed=True)
+        submission_scores = create_submission_scores(party_round)
+        print(submission_scores)
         channel_layer = channels.layers.get_channel_layer()
         async_to_sync(channel_layer.group_send)('chat_%s' % party_id, {
                 'type': 'chat_message',
-                'submission_score': submission_score,
+                'submission_score': json.dumps(submission_scores),
                 'message': 'round_complete',
                 'player_name': player.player_name,
                 })
-        return redirect('/party/%s' % party_id)    
+        return redirect(f'/party/{party_id}')    
 
-    return render(request, 'question.html', {
-        'player': player,
-        'party_name': party.party_name,
-    })
+    return redirect(f'/waiting/{party_id}')
+
+
+def create_submission_scores(party_round):
+    submission_scores = {}
+    submissions = {}
+    trivia_submissions = party_round.submissions.all()
+    trivia_question = TriviaQuestion.objects.get(party_round=party_round)
+    submission_scores['correct_answer'] = trivia_question.correct_answer
+    for submission in trivia_submissions:
+        player_name = submission.player.player_name
+        score = submission.score
+        submissions[player_name] = score
+    submission_scores['submissions'] = submissions
+    return submission_scores
+
+
 
 def join_party(request, party_id):
     data = request.POST
@@ -291,7 +327,6 @@ def jumble_answers(incorrect, correct):
 
 def calculate_player_score(player, party):
     rounds = party.rounds.filter(completed=True).all()
-    print(rounds)
     trivia_submissions = TriviaSubmission.objects.filter(
         party_round__in=rounds,
         player=player

@@ -30,12 +30,12 @@
             {% endfor %}
             <div class="row submit">
                 <div class="col-12">
-                    <form action="{{party.party_name}}/submission" method="POST">
+                    <form action="{{party.party_name}}/submission" method="POST" id="submitAnswerForm">
                     {% csrf_token %}
                     <input type="hidden" name="answer" id="confirmed_answer" />
                     <input type="hidden" name="round_id" value="{{round.id}}" />
                     <input type="hidden" name="question_id" value="{{question.id}}" />
-                    <button class="btn btn-danger" style="width:100%">Submit Answer</button>
+                    <button class="btn btn-danger" style="width:100%" id="submit-answer-btn">Submit Answer</button>
                     </form>
                 </div>
             </div>
@@ -47,6 +47,21 @@
                     $('.answer').removeClass('selected_answer');
                     $(this).addClass('selected_answer');
                     $('#confirmed_answer').val($(this).text());
+                })
+                $('#submitAnswerForm').submit(function(event){
+                    if($('#confirmed_answer').val() == ''){
+                        event.preventDefault()
+                        const options = {
+                            'title': 'No answer selected!',
+                            'placement': 'top'
+                        }
+                        let tooltip_target = $('#submit-answer-btn');
+                        tooltip_target.tooltip(options);
+                        tooltip_target.tooltip('show');
+                        setTimeout(function(){
+                            tooltip_target.tooltip('dispose');
+                        },1000)
+                    }
                 })
             })
         </script>
