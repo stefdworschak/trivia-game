@@ -218,7 +218,7 @@ def submit_question(request, party_id):
                 'message': 'round_complete',
                 'player_name': player.player_name,
                 })
-        return redirect(f'/party/{party_id}')    
+        return redirect(f'/waiting/{party_id}')    
 
     return redirect(f'/waiting/{party_id}')
 
