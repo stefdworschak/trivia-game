@@ -37,7 +37,7 @@
                     console.log(data);
                     if(data.message == 'round_complete'){
                         console.log(data.submission_score)
-                        if(data.submission_score != undefined || data.submission_score != null){
+                        if(data.submission_score != undefined && data.submission_score != null){
                             try{
                                 const submission_score = JSON.parse(submission_score);
                                 if(submission_score.submissions[player_name] == 1){
@@ -53,9 +53,9 @@
                             } catch(e){
                                 console.log(e)
                             }
-                            setTimeout(function(){
-                                window.location.replace('/party/'+party_name);
-                            }, 2000)
+                            //setTimeout(function(){
+                            //    window.location.replace('/party/'+party_name);
+                            //}, 2000)
                         } else {
                             console.log(data.submission_score)
                         }
