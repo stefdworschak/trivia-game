@@ -39,7 +39,7 @@
                         console.log(data.submission_score)
                         if(data.submission_score != undefined && data.submission_score != null){
                             try{
-                                const submission_score = JSON.parse(submission_score);
+                                const submission_score = JSON.parse(data.submission_score);
                                 if(submission_score.submissions[player_name] == 1){
                                     // Correct
                                     $('#waiting').hide();
