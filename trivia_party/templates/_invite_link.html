@@ -1,0 +1,23 @@
+<button class="btn btn-primary btn-sm" id="copy_invite_link">Share Link</button>
+<script>
+    $('#copy_invite_link').click(function(){
+        const element = document.createElement('input');
+        const url = window.location.href;
+        element.value = url.replace('/trivia/','/join/').replace('/waiting/','/join/');
+        document.body.appendChild(element);
+        element.select();
+        document.execCommand('copy');
+        document.body.removeChild(element);
+        const options = {
+            'title': 'Link copied',
+            'placement': 'auto'
+        }
+        let tooltip_target = $(this);
+        tooltip_target.tooltip(options);
+        tooltip_target.tooltip('show');
+        setTimeout(function(){
+            tooltip_target.tooltip('dispose');
+        },1000)
+        
+    })
+</script>

@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <div class="row player-name-row">
+        <div class="col-12">
+    
+            <div class="card" id="name_modal">
+                <div class="card-body">
+                    <div class="card-title">Choose Player Name</div>
+                    <form id="join_form" action="/create_or_join_party" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="party_id" value="{{ party_id }}" />
+                        <input type="hidden" name="party_type" value="{{ party_type }}" />
+                        <input type="hidden" name="trivia_category" value="{{ trivia_category }}" />
+                        <input type="hidden" name="num_players" value="{{ num_players }}" />
+                        <input type="hidden" name="num_rounds" value="{{ num_rounds }}" />
+                        <input type="hidden" name="player" />
+    
+                        <div class="card-text"></div>
+                            <div class="form-group">
+                                <input type="text" class="form-control" name="player_name" id="player_name" />
+                            </div>
+                            <div class="form-group">
+                                <button type="button" class="btn btn-success btn-sm" id="find_player">Find Existing Player</button>
+                                <button type="button" class="btn btn-warning btn-sm" id="create_player">Create New Player</button>
+                                <button type="button" class="btn btn-danger btn-sm" id="reset_join_player" style="display:none">Reset</button>
+                            </div>
+                            <div class="alert alert-warning error_output" style="display:none"></div>
+                        </div>
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-primary" id="join_party" disabled>Join party</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        
+        </div>
+    </div>
+</div>
+{% endblock %}

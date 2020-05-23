@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="player-score">
+    {{ player.player_name }}'s score: 
+    <span class="badge badge-light">
+        {% if player_score.score__sum %}{{player_score.score__sum}}{% else %}0{% endif %}
+    </span> of 
+    <span class="badge badge-light">
+        {{player_score.score__count}}
+    </span>
+    {% include '_invite_link.html' %}
+</div>
+
+<div class="container">
+    <div class="row player-name-row">
+        <div class="col-12">
+            <div style="text-align:center">
+                <h1>TriviaParty</h1>
+                <h5>Round {{current_round}} of {{party.num_rounds}}</h5>
+            </div>
+            <br />
+            <div class="row" id="question">
+                <div class="col-12" style="text-align:center; font-size:24px;">{{question.question_text|safe}}</div>
+            </div>
+            <br />
+            <br />
+            {% for answer in answers %}
+            <div class="row answers">
+                <div class="col-12"><button class="btn btn-primary answer" style="width:100%" data-item-value="{{answer}}">{{answer|safe}}</button></div>
+            </div>
+            {% endfor %}
+            <div class="row submit">
+                <div class="col-12">
+                    <form action="{{party.party_name}}/submission" method="POST" id="submitAnswerForm">
+                    {% csrf_token %}
+                    <input type="hidden" name="answer" id="confirmed_answer" />
+                    <input type="hidden" name="round_id" value="{{round.id}}" />
+                    <input type="hidden" name="question_id" value="{{question.id}}" />
+                    <button class="btn btn-danger" style="width:100%" id="submit-answer-btn">Submit Answer</button>
+                    </form>
+                </div>
+            </div>
+            
+        </div>
+        <script>
+            $(document).ready(function(){
+                $('.answer').click(function(){
+                    $('.answer').removeClass('selected_answer');
+                    $(this).addClass('selected_answer');
+                    $('#confirmed_answer').val($(this).data('item-value'));
+                })
+                $('#submitAnswerForm').submit(function(event){
+                    if($('#confirmed_answer').val() == ''){
+                        event.preventDefault()
+                        const options = {
+                            'title': 'No answer selected!',
+                            'placement': 'top'
+                        }
+                        let tooltip_target = $('#submit-answer-btn');
+                        tooltip_target.tooltip(options);
+                        tooltip_target.tooltip('show');
+                        setTimeout(function(){
+                            tooltip_target.tooltip('dispose');
+                        },1000)
+                    }
+                })
+            })
+        </script>
+    </div>
+</div>
+{% endblock %}
