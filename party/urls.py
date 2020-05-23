@@ -18,6 +18,4 @@ urlpatterns = [
      path('party/<str:party_id>', views.party, name='party'),
      path('party/<str:party_id>/submission', 
                views.submit_question, name='submission'),
-     path('party/<str:party_id>/correct', views.correct_submission, name='correct_submission'),
-     path('party/<str:party_id>/wrong', views.wrong_submission, name='wrong_submission'),
 ]
