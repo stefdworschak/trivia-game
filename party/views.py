@@ -4,7 +4,7 @@ import hashlib
 import logging
 from operator import itemgetter
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 import random
 import requests
 
@@ -16,6 +16,7 @@ from django.http import JsonResponse
 from django.forms.models import model_to_dict
 from django.core import serializers
 from django.db.models import Sum, Count
+from django.utils import timezone
 
 from .models import Party, Player, Round, TriviaQuestion, TriviaSubmission
 from .game_modes.trivia import create_new_trivia_submission
@@ -327,19 +328,27 @@ def party_to_dict(m):
             _party[key] = val
     return _party
 
-def add_questions(party):
+def add_questions(party, remove_duplicates=True):
+    num_count = 0
     category = ''
-    rounds = int(party.num_rounds) * 2
-    print("QUESTIONS: ", rounds)
+    rounds = int(party.num_rounds) * 4
     if party.party_subtype != 'any':
         category = f'&category={party.party_subtype}'
     trivia_url = f'https://opentdb.com/api.php?amount={rounds}&type=multiple{category}'
-    print(trivia_url)
     res = requests.get(trivia_url)
     if res.status_code == 200:
         questions = res.json()['results']
-    print("QUESTIONS: ", len(questions))
     for question in questions:
+        if num_count > int(party.num_rounds):
+            print("COUNT", str(num_count))
+            return
+        # TODO: Check that this is working once there is more data
+        two_weeks_ago = timezone.now() - timedelta(days=14)
+        duplicate_questions = len(TriviaQuestion.objects.filter(
+            question_text=question.get('question'),
+            created_at__gt=two_weeks_ago))
+        if duplicate_questions > 0 and remove_duplicates:
+            continue
         party_round = Round(party=party, num_submissions=0)
         party_round.save()
         trivia_question = TriviaQuestion(
@@ -354,6 +363,10 @@ def add_questions(party):
             party_round=party_round
         )
         trivia_question.save()
+        num_count += 1
+    
+    if num_count < int(party.num_rounds):
+        add_questions(party, remove_duplicates=False)
     return
 
 def jumble_answers(incorrect, correct):
