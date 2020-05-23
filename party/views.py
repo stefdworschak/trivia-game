@@ -75,10 +75,10 @@ def waiting_screen(request, party_id):
     player = Player.objects.get(id=request.session.get('player'))
     party_round = party.rounds.filter(completed=False).first()
     total_submissions = check_total_submissions(party.party_type, party_round)
-    print("TOTAL SUBS", total_submissions)
-    print("PLAYERS", party.num_players)
+    print("WAITING SCREEN")
+    print("TOTAL SUBMISSIONS", total_submissions)
+    print("NUM PLAYERS", party.num_players)
     if total_submissions == party.num_players:
-        Round.objects.filter(id=party_round.id).update(completed=True)
         return redirect(f'/party/{party.party_name}')
     return render(request, 'waiting_screen.html', {
         'party': party,
@@ -283,8 +283,9 @@ def check_total_submissions(party_type, party_round):
     """ Get the number of total submissions based on the game type """
     submissions = 0
     if party_type == 'trivia':
-        return len(TriviaSubmission.objects.filter(
-            party_round=party_round))
+        trivia_submissions = TriviaSubmission.objects.filter(
+            party_round=party_round)
+        return len(trivia_submissions)
     return submissions
 
 
@@ -301,8 +302,6 @@ def check_party_player_submissions(party_type, party_round, player):
 
 def submit_question(request, party_id):
     """ (non-view) Create a new submission for a question for a player """
-    print("REDIS URL")
-    print(os.environ.get('REDIS_URL'))
     if not request.session.get('player'):
         return redirect('/')
     if not request.POST:
@@ -312,7 +311,6 @@ def submit_question(request, party_id):
     party = Party.objects.get(party_name=party_id)
     party_round = Round.objects.get(id=request.POST.get('round_id'))
     trivia_question = TriviaQuestion.objects.get(id=request.POST.get('question_id'))
-    total_submissions = check_total_submissions(party.party_type, party_round)
     submission_score = create_submission(
         party_type=party.party_type, 
         options={
@@ -321,9 +319,10 @@ def submit_question(request, party_id):
             'question_id': request.POST.get('round_id'),
             'answer': request.POST.get('answer'),
         })
-
-    logger.debug("TOTAL SUBMISSIONS", total_submissions)
-    logger.debug("TOTAL SUBMISSIONS", party.num_players)
+    total_submissions = check_total_submissions(party.party_type, party_round)
+    print("SUBMIT QUESTION")
+    print("TOTAL SUBMISSIONS", total_submissions)
+    print("NUM PLAYERS", party.num_players)
     if total_submissions == party.num_players:
         Round.objects.filter(id=request.POST.get('round_id')).update(completed=True)
         submission_scores = create_submission_scores(party_round, party.party_type)

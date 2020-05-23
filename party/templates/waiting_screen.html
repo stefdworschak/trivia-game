@@ -77,6 +77,10 @@
                     console.error('Party socket closed unexpectedly');
                 };
 
+                partySocket.onopen = function(){
+                    console.log("Connected to Redis")
+                };
+
 
                 function processSubmission(submission, correct_answer){
                     if(submission == 1){
