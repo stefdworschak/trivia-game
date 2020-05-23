@@ -11,7 +11,7 @@
                 <h3>Answer submitted. Waiting for the other players</h3>
 
                 <div class="waiting-btns">
-                    <a role="button" href="/trivia/{{party.party_name}}"
+                    <a role="button" href="/trivia/{{party.party_name}}/party"
                         class="btn btn-success" id="refresh">Refresh</a>
                     <a role="button"  href="/join/{{party.party_name}}"
                        class="btn btn-warning" id="rejoin">Rejoin Party</a>
@@ -29,7 +29,6 @@
             </div>
             {{ party.party_name|json_script:"party_name" }}
             {{ player.player_name|json_script:"player_name" }}
-            {{ party.party_type|json_script:"party_type" }}
             {{ ws_protocol|json_script:"ws_protocol" }}
             <script>
                 const queryString = window.location.search;
@@ -39,7 +38,6 @@
                 const score = queryString.split('=')
                 const party_name = JSON.parse(document.getElementById('party_name').textContent);
                 const player_name = JSON.parse(document.getElementById('player_name').textContent);
-                const party_type = JSON.parse(document.getElementById('party_type').textContent);
                 const ws_protocol = JSON.parse(document.getElementById('ws_protocol').textContent);
                 const connection_uri = `${ws_protocol}://${window.location.host}/ws/${party_type}/${party_name}/`; 
                 

@@ -1,9 +1,11 @@
-function create_invite_link(selector){
+function create_invite_link(selector, party_type){
     /* Creates and copies the join link */
     $(selector).click(function(){
         const element = document.createElement('input');
         const url = window.location.href;
-        element.value = url.replace('/trivia/','/join/').replace('/waiting/','/join/').replace('/start/','/join/');
+        element.value = url.replace('/start/','/join/').replace('/waiting','').replace('/party','');
+        element.value = element.value.replace(`/${party_type}/`,'/join/');
+        console.log(element.value)
         document.body.appendChild(element);
         element.select();
         document.execCommand('copy');
@@ -31,7 +33,7 @@ function start_timer(options){
             start_timer(options);
         }, 1000);
     } else {
-        window.location.replace(`/${options.party_type}/${options.party_name}`);
+        window.location.replace(`/${options.party_type}/${options.party_name}/party`);
     }
 }
 
@@ -54,7 +56,7 @@ function processSubmission(options){
         $('#waiting').hide();
         $('#correct').show();
         setTimeout(function(){
-            window.location.replace(`/${options.party_type}/${options.party_name}`);
+            window.location.replace(`/${options.party_type}/${options.party_name}/party`);
         }, 2000)
     } else if (options.submission == 0) {
         // Incorrect
@@ -62,7 +64,7 @@ function processSubmission(options){
         $('#correct-answer').html(options.correct_answer)
         $('#wrong').show();
         setTimeout(function(){
-            window.location.replace(`/${options.party_type}/${options.party_name}`);
+            window.location.replace(`/${options.party_type}/${options.party_name}/party`);
         }, 2000)
     }
 }

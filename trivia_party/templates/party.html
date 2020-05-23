@@ -31,7 +31,7 @@
             {% endfor %}
             <div class="row submit">
                 <div class="col-12">
-                    <form action="{{party.party_name}}/submission" method="POST" id="submitAnswerForm">
+                    <form action="submission" method="POST" id="submitAnswerForm">
                     {% csrf_token %}
                     <input type="hidden" name="answer" id="confirmed_answer" />
                     <input type="hidden" name="round_id" value="{{round.id}}" />

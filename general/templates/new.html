@@ -8,7 +8,7 @@
             <h2 class="party-header">Party Name</h2>
             <div class="row create-party">
 
-                <form action="join/{{ hex_digest }}" method="POST">
+                <form action="/join/{{ hex_digest }}" method="POST">
                     {% csrf_token %}
                     <input type="hidden" name="party_type" value="trivia" />
                     <h1 class="party-name">{{ hex_digest }}</h1>

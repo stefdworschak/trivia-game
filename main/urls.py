@@ -19,6 +19,8 @@ from django.conf.urls import url
 from trivia_party.urls import urlpatterns as trivia_party_urls
 
 urlpatterns = [
+    path('', include('general.urls')),
     path('admin/', admin.site.urls),
-    path('', include('trivia_party.urls')),
+    path('trivia/', include('trivia_party.urls')),
+    
 ]
