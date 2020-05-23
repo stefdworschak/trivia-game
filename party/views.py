@@ -320,9 +320,11 @@ def submit_question(request, party_id):
             'answer': request.POST.get('answer'),
         })
     total_submissions = check_total_submissions(party.party_type, party_round)
-    print("SUBMIT QUESTION")
-    print("TOTAL SUBMISSIONS", total_submissions)
-    print("NUM PLAYERS", party.num_players)
+    if total_submissions is None:
+        print("TOTAL SUBMISSIONS NONE")
+    else:
+        print("TOTAL SUBMISSIONS", str(total_submissions))
+    print("NUM PLAYERS", str(party.num_players))
     if total_submissions == party.num_players:
         Round.objects.filter(id=request.POST.get('round_id')).update(completed=True)
         submission_scores = create_submission_scores(party_round, party.party_type)
