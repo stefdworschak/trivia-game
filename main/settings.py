@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'trivia_party',
-    'example',
 ]
 
 MIDDLEWARE = [
@@ -136,13 +135,17 @@ CHANNEL_LAYERS = {
     'default': {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         'CONFIG': {
-            'hosts': [os.environ.get('REDIS_URL', ('127.0.0.1', 6379))],
+            'hosts': [os.environ.get('REDIS_URL', ('localhost', 6379))],
         },
         'symmetric_encryption_keys': [SECRET_KEY],
         #'ROUTING': 'main.routing.application',
     }
 }
 
+WS_PROTOCOL = 'ws'
+HOSTNAME = os.environ.get('HOSTNAME', 'localhost')
+if HOSTNAME == 'heroku':
+    WS_PROTOCOL = 'wss'
 
 LOGGING = {
 	'version': 1,

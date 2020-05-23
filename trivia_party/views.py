@@ -17,6 +17,7 @@ from django.forms.models import model_to_dict
 from django.core import serializers
 from django.db.models import Sum, Count
 from django.utils import timezone
+from django.conf import settings
 
 from .models import Party, Player, Round, TriviaQuestion, TriviaSubmission
 from .trivia import (create_new_trivia_submission,
@@ -65,7 +66,9 @@ def start_screen(request, party_id):
     if party.status == 2:
         return redirect(f'/finish/{party_id}')
     return render(request, 'start_screen.html', {
-        'party': party })
+        'party': party,
+        'ws_protocol': settings.WS_PROTOCOL,
+        })
 
 
 def waiting_screen(request, party_id):
@@ -83,7 +86,8 @@ def waiting_screen(request, party_id):
     return render(request, 'waiting_screen.html', {
         'party': party,
         'player': player,
-    })
+        'ws_protocol': settings.WS_PROTOCOL,
+        })
 
 
 def trivia_party(request, party_id):
@@ -148,7 +152,11 @@ def finish_screen(request, party_id):
             other_players.append(s)
 
     return render(request, 'finish_screen.html', {
-        'party': party, 'winners': winners, 'other_players': other_players })
+        'party': party, 
+        'winners': winners, 
+        'other_players': other_players,
+        'ws_protocol': settings.WS_PROTOCOL,
+        })
 
 
 def find_player(request):
@@ -214,7 +222,7 @@ def recreate_party(request):
         'message': msg,
         'player_name': '',
         })
-    return redirect(f'/trivia/{new_party_id}')
+    return redirect(f'/start/{new_party_id}')
 
 
 def create_or_join_party(request):

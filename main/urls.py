@@ -21,5 +21,4 @@ from trivia_party.urls import urlpatterns as trivia_party_urls
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('trivia_party.urls')),
-    url(r'example/', include('example.urls')),
 ]

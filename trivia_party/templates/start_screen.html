@@ -28,82 +28,35 @@
             {{ party.party_name|json_script:"party_name" }}
             {{ party.num_players|json_script:"num_players" }}
             {{ party.players.all|length|json_script:"joined_players" }}
+            {{ party.party_type|json_script:"party_type" }}
+            {{ ws_protocol|json_script:"ws_protocol" }}
             <script>
-                let party_name = JSON.parse(document.getElementById('party_name').textContent);
-                let num_players = JSON.parse(document.getElementById('num_players').textContent);
-                let joined_players = JSON.parse(document.getElementById('joined_players').textContent);
-              
+                const party_name = JSON.parse(document.getElementById('party_name').textContent);
+                const num_players = JSON.parse(document.getElementById('num_players').textContent);
+                const joined_players = JSON.parse(document.getElementById('joined_players').textContent);
+                const party_type = JSON.parse(document.getElementById('party_type').textContent);
+                const ws_protocol = JSON.parse(document.getElementById('ws_protocol').textContent);
+                const connection_uri = `${ws_protocol}://${window.location.host}/ws/${party_type}/${party_name}/`; 
+                const channel_options = {
+                    "party_type": party_type,
+                    "party_name": party_name,
+                    "connection_uri": connection_uri,
+                    "source": "start_screen"
+                }   
+                setChannels(channel_options);
+                create_invite_link('.copy-invite'); 
+
+                // If the party is full and all players have joined start
+                // timer to redirect to game
                 if(num_players == joined_players){
-                    timer(10);
-                }
-
-                function timer(seconds){
-                    $('.party-starting').text(`Starting in ${seconds}s`)
-                    if(seconds > 0){
-                        let s = seconds-1;
-                        setTimeout(function(){
-                            timer(s);
-                        }, 1000);
-                    } else {
-                        window.location.replace('/trivia/'+party_name);
+                    const timer_options = {
+                        "selector": ".party-starting",
+                        "party_type": party_type,
+                        "party_name": party_name,
+                        "seconds": 10
                     }
-                }
-
-                $('.copy-invite').click(function(){
-                    const element = document.createElement('input');
-                    const url = window.location.href;
-                    element.value = url.replace('/start/','/join/');
-                    document.body.appendChild(element);
-                    element.select();
-                    document.execCommand('copy');
-                    document.body.removeChild(element);
-                    const options = {
-                        'title': 'Link copied',
-                        'placement': 'auto'
-                    }
-                    let tooltip_target = $(this);
-                    tooltip_target.tooltip(options);
-                    tooltip_target.tooltip('show');
-                    setTimeout(function(){
-                        tooltip_target.tooltip('dispose');
-                    },1000)
-                    
-                })
-
-                function appendIfNotExists(player_name){
-                    const matches = $(`.players-list li:contains(${player_name})`).length;
-                    if(matches == 0){
-                        let ul = $('.players-list ul')
-                        let li = $('<li></li>');
-                        let span = $('<span class="badge badge-pill badge-dark username"></span>');
-                        span.text(player_name);
-                        li.append(span);
-                        ul.append(li);
-                    }
-                }
-                               
-                const connection_uri = 'wss://'
-                    + window.location.host
-                    + '/ws/trivia/'
-                    + party_name
-                    + '/';
-                console.log(connection_uri)
-                const partySocket = new WebSocket(connection_uri);
-        
-                partySocket.onmessage = function(e) {
-                    const data = JSON.parse(e.data);
-                    if(data.message == 'game_starts'){
-                        timer(10);
-                    }
-                    if(data.player_name != null && data.player_name != undefined) {
-                        appendIfNotExists(data.player_name);
-                    }
-
-                };
-        
-                partySocket.onclose = function(e) {
-                    console.error('Party socket closed unexpectedly');
-                };
+                    start_timer(timer_options); 
+                }      
             </script>
 
         </div>

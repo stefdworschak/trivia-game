@@ -29,77 +29,36 @@
             </div>
             {{ party.party_name|json_script:"party_name" }}
             {{ player.player_name|json_script:"player_name" }}
+            {{ party.party_type|json_script:"party_type" }}
+            {{ ws_protocol|json_script:"ws_protocol" }}
             <script>
                 const queryString = window.location.search;
                 const searchParams = new URLSearchParams(queryString);
                 const get_submission = searchParams.get("submission");
                 const get_correct_answer = searchParams.get("correct_answer");
-                processSubmission(get_submission, get_correct_answer);
-
                 const score = queryString.split('=')
                 const party_name = JSON.parse(document.getElementById('party_name').textContent);
                 const player_name = JSON.parse(document.getElementById('player_name').textContent);
-                const connection_uri = 'wss://'
-                    + window.location.host
-                    + '/ws/trivia/'
-                    + party_name
-                    + '/';
-                console.log(connection_uri)
-                const partySocket = new WebSocket(connection_uri);
-        
-                partySocket.onmessage = function(e) {
-                    const data = JSON.parse(e.data);
-                    console.log(data);
-                    if(data.message == 'round_complete'){
-                        console.log(data.submission_score)
-                        if(data.submission_score != undefined && data.submission_score != null){
-                            try{
-                                const submission_score = JSON.parse(data.submission_score);
-                                processSubmission(
-                                    submission_score.submissions[player_name],
-                                    submission_score.correct_answer
-                                )
-                            } catch(e){
-                                console.log(e)
-                                setTimeout(function(){
-                                    window.location.replace('/trivia/'+party_name);
-                                }, 2000)
-                            }
-                            
-                        } else {
-                            console.log(data.submission_score)
-                        }
-                        
-                    }
-                };
-        
-                partySocket.onclose = function(e) {
-                    console.error('Party socket closed unexpectedly');
-                };
-
-                partySocket.onopen = function(){
-                    console.log("Connected to Redis")
-                };
-
-
-                function processSubmission(submission, correct_answer){
-                    if(submission == 1){
-                        // Correct
-                        $('#waiting').hide();
-                        $('#correct').show();
-                        setTimeout(function(){
-                            window.location.replace('/trivia/'+party_name);
-                        }, 2000)
-                    } else if (submission == 0) {
-                        // Incorrect
-                        $('#waiting').hide();
-                        $('#correct-answer').text(correct_answer)
-                        $('#wrong').show();
-                        setTimeout(function(){
-                            window.location.replace('/trivia/'+party_name);
-                        }, 2000)
-                    }
+                const party_type = JSON.parse(document.getElementById('party_type').textContent);
+                const ws_protocol = JSON.parse(document.getElementById('ws_protocol').textContent);
+                const connection_uri = `${ws_protocol}://${window.location.host}/ws/${party_type}/${party_name}/`; 
+                
+                const submission_options = {
+                    "submission": get_submission,
+                    "correct_answer": get_correct_answer,
+                    "party_type": party_type,
+                    "party_name": party_name
                 }
+                processSubmission(submission_options);
+
+                const channel_options = {
+                    "party_type": party_type,
+                    "party_name": party_name,
+                    "connection_uri": connection_uri,
+                    "source": "start_screen"
+                }
+
+                setChannels(channel_options);
             </script>
         </div>
     </div>
