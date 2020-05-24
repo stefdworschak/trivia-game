@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load custom_tags %}
+{% block content %}
+
+<div class="container">
+    <div class="row player-name-row">
+        <div class="col-12">
+            <div class="text-center">
+                <h3>Welcome to a new {{ party.party_type|capitalize }} Party!</h3>
+                {{party.created}}
+                <div class="players-list">
+                    <button class="btn btn-primary btn-sm copy-invite">Copy Invite Link</button>
+                    <hr />
+                    <strong>Joined Players ({{party.players.all|length}} of {{party.num_players}})</strong>
+                    <ul class="text-center">
+                        {% for player in party.players.all %}
+                        <li>
+                            <span class="badge badge-pill badge-dark username">
+                                {{player.player_name}}
+                            </span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <div class="party-starting text-center"></div>
+            {{ party.party_name|json_script:"party_name" }}
+            {{ party.num_players|json_script:"num_players" }}
+            {{ party.players.all|length|json_script:"joined_players" }}
+            {{ party.party_type|json_script:"party_type" }}
+            {{ ws_protocol|json_script:"ws_protocol" }}
+            <script>
+                const party_name = JSON.parse(document.getElementById('party_name').textContent);
+                const num_players = JSON.parse(document.getElementById('num_players').textContent);
+                const joined_players = JSON.parse(document.getElementById('joined_players').textContent);
+                const party_type = JSON.parse(document.getElementById('party_type').textContent);
+                const ws_protocol = JSON.parse(document.getElementById('ws_protocol').textContent);
+                const connection_uri = `${ws_protocol}://${window.location.host}/ws/${party_type}/${party_name}/`; 
+                const channel_options = {
+                    "party_type": party_type,
+                    "party_name": party_name,
+                    "connection_uri": connection_uri,
+                    "source": "start_screen"
+                }   
+                setChannels(channel_options);
+                create_invite_link('.copy-invite', party_type); 
+
+                // If the party is full and all players have joined start
+                // timer to redirect to game
+                if(num_players == joined_players){
+                    const timer_options = {
+                        "selector": ".party-starting",
+                        "party_type": party_type,
+                        "party_name": party_name,
+                        "seconds": 10
+                    }
+                    start_timer(timer_options); 
+                }      
+            </script>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,6 +1,5 @@
 $(document).ready(function(){
 
-    
     $('#find_player').click(function(){
         const player_name = $('#player_name').val();
         $.ajax({

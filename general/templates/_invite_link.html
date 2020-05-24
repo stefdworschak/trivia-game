@@ -1,0 +1,6 @@
+{{ party.party_type|json_script:"party_type" }}
+<button class="btn btn-primary btn-sm" id="copy_invite_link">Share Link</button>
+<script>
+    const party_type = JSON.parse(document.getElementById('party_type').textContent);
+    create_invite_link('#copy_invite_link', party_type);
+</script>

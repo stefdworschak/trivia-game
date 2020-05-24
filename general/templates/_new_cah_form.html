@@ -1,0 +1,20 @@
+{% include '_party_name_form.html' %}
+<form action="/join/{{ hex_digest }}" method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="party_type" value="cah" />
+    <input type="hidden" name="party_name" value="{{ hex_digest }}" />
+    {% include '_general_fields_form.html' %}
+    <div style="display:none">
+        <h2 class="party-header">Extra Decks</h2>
+        <div class="form-group category-select">
+            <select name="party_category" class="form-control" name="category" multiple>
+                {% for deck in cah_decks %}
+                    {% if deck.id != 'main_deck' %}
+                    <option value="{{deck.id}}">{{deck.name}}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary create-party-btn">New Party</button>
+</form>

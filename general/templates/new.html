@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <div class="row create-party-row">
+        <div class="col-12">
+            <nav>
+                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                    <a class="nav-item nav-link active" id="nav-trivia-tab" data-toggle="tab" href="#nav-trivia" role="tab" aria-controls="nav-trivia" aria-selected="true">Trivia</a>
+                    <a class="nav-item nav-link" id="nav-cah-tab" data-toggle="tab" href="#nav-cah" role="tab" aria-controls="nav-cah" aria-selected="false">CAH</a>
+                    <!--<a class="nav-item nav-link" id="nav-adventure-tab" data-toggle="tab" href="#nav-adventure" role="tab" aria-controls="nav-adventure" aria-selected="false">Adventure</a>-->
+                </div>
+            </nav>
+            <div class="row create-party">
+                <div class="tab-content" id="nav-tabContent">
+                    <div class="tab-pane fade show active" id="nav-trivia" 
+                        role="tabpanel" aria-labelledby="nav-trivia-tab">
+                        {% include '_new_trivia_form.html' %}
+                    </div>
+                    <div class="tab-pane fade" id="nav-cah" role="tabpanel"
+                        aria-labelledby="nav-cah-tab">
+                        {% include '_new_cah_form.html' %}
+                    </div>
+                    <div class="tab-pane fade" id="nav-adventure"
+                        role="tabpanel" aria-labelledby="nav-adventure-tab">
+                        {% include '_new_adventure_form.html' %}
+                    </div>
+                  </div>
+            </div>
+        </div>
+            
+    </div>
+</div>
+{% endblock %}
