@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'general',
     'trivia_party',
+    'cah',
 ]
 
 MIDDLEWARE = [

@@ -3,7 +3,7 @@
 <div class="container">
     <div class="row player-name-row">
         <div class="col-12">
-    
+            Party Type: {{ party_category }}
             <div class="card" id="name_modal">
                 <div class="card-body">
                     <div class="card-title">Choose Player Name</div>
@@ -11,7 +11,7 @@
                         {% csrf_token %}
                         <input type="hidden" name="party_id" value="{{ party_id }}" />
                         <input type="hidden" name="party_type" value="{{ party_type }}" />
-                        <input type="hidden" name="trivia_category" value="{{ trivia_category }}" />
+                        <input type="hidden" name="party_category" value="{{ party_category }}" />
                         <input type="hidden" name="num_players" value="{{ num_players }}" />
                         <input type="hidden" name="num_rounds" value="{{ num_rounds }}" />
                         <input type="hidden" name="player" />

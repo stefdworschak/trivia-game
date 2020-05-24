@@ -7,10 +7,12 @@ from django.http import JsonResponse
 from django.forms.models import model_to_dict
 from django.shortcuts import render, redirect
 import hashlib
+import json
 import namegenerator
 
 from trivia_party.models import Player, Party
 from .helpers import add_party_content
+from cah.data.load_decks import load_decks
 
 
 def new_party(request):
@@ -18,21 +20,12 @@ def new_party(request):
     gen_hash = hashlib.sha256()
     gen_hash.update(str(datetime.now()).encode('utf-8'))
     hex_digest = gen_hash.hexdigest()
+    cah_decks = load_decks()
     return render(request, 'new.html', 
-                  {"hex_digest": namegenerator.gen() + '-' + hex_digest[-4:]})
-
-
-def join_party(request, party_id):
-    """ Shows form to find or create new player and join or create a party """
-    data = request.POST
-    pass_through = {
-        'party_id': party_id,
-        'party_type': data.get('party_type'),
-        'trivia_category': data.get('trivia_category'),
-        'num_players': data.get('num_players'),
-        'num_rounds': data.get('num_rounds')
-    }
-    return render(request, 'join.html', pass_through)
+                  {
+                    "hex_digest": namegenerator.gen() + '-' + hex_digest[-4:],
+                    "cah_decks": cah_decks,
+                  })
 
 
 def start_screen(request, party_id):
@@ -78,10 +71,14 @@ def create_player(request):
 def join_party(request, party_id):
     """ Shows form to find or create new player and join or create a party """
     data = request.POST
+    if data.get('party_type') == 'cah':
+        party_subtype = ','.join(data.getlist("party_category"))
+    else:
+        party_subtype = data.get('party_category')
     pass_through = {
         'party_id': party_id,
         'party_type': data.get('party_type'),
-        'trivia_category': data.get('trivia_category'),
+        'party_category': party_subtype,
         'num_players': data.get('num_players'),
         'num_rounds': data.get('num_rounds')
     }
@@ -102,12 +99,12 @@ def create_or_join_party(request):
                     admin=player,
                     num_rounds=data.get('num_rounds'),
                     party_type=data.get('party_type'),
-                    party_subtype=data.get('trivia_category'))
+                    party_subtype=data.get('party_category'))
         p.save()
         p.players.add(player)
         add_party_content(p)
         request.session['player'] = player.id
-        return redirect(f'/trivia/{data.get("party_id")}/party')
+        return redirect(f'/{data.get("party_type")}/{data.get("party_id")}/party')
     else:
         p = Party.objects.get(party_name=party_id)
         msg = ''
@@ -129,7 +126,7 @@ def create_or_join_party(request):
             return redirect(f'/start/{data.get("party_id")}')
         elif p.players.filter(id=player.id).exists():
             request.session['player'] = player.id
-            return redirect(f'/trivia/{data.get("party_id")}/party')
+            return redirect(f'/data.get("party_type")/{data.get("party_id")}/party')
         else:
             return redirect('/?error=party_full')
     #except:

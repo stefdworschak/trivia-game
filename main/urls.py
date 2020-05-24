@@ -22,5 +22,5 @@ urlpatterns = [
     path('', include('general.urls')),
     path('admin/', admin.site.urls),
     path('trivia/', include('trivia_party.urls')),
-    
+    path('cah/', include('cah.urls')),
 ]
