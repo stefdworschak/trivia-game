@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load custom_tags %}
+{% load static %}
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="text-center finished-players-list">
+                <img src="{% static 'img/first_place.png' %}" class="first-place-img">
+                {% if winners|length > 1 %}
+                <h4>It's a tie!</h4>
+                {% endif %}
+                <ul class="text-center">
+                    {% for winner in winners %}
+                    <li>
+                        <span class="badge badge-pill badge-dark username">
+                            {{winner.player_name}} - {{winner.score}}pts
+                        </span>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% if other_players|length > 0 %}
+                <hr />
+                    <div class="finished-players-list">
+                        <strong>Following</strong>
+                        <ul class="text-center">
+                            {% for other in other_players %}
+                            <li>
+                                <span class="badge badge-pill badge-dark username">
+                                    {{other.player_name}} - {{other.score}}pts
+                                </span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="button-menu text-center">
+                <form action="/recreate_party" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="party_id" value="{{party.party_name}}" />
+                    <button role="submit" class="btn btn-success" id="play-again">Play Again (same settings)</button>
+                </form>
+                <a role="button" href="/" class="btn btn-primary">Create New Party</a>
+            </div>
+
+            <div class="party-starting text-center"></div>
+            {{ party.party_name|json_script:"party_name" }}
+            {{ party.party_type|json_script:"party_type" }}
+            {{ ws_protocol|json_script:"ws_protocol" }}
+            <script>
+                let new_party_name = "";
+                const party_name = JSON.parse(document.getElementById('party_name').textContent);
+                const party_type = JSON.parse(document.getElementById('party_type').textContent);
+                const ws_protocol = JSON.parse(document.getElementById('ws_protocol').textContent);
+                const connection_uri = `${ws_protocol}://${window.location.host}/ws/${party_type}/${party_name}/`; 
+                const channel_options = {
+                    "party_type": party_type,
+                    "party_name": party_name,
+                    "connection_uri": connection_uri,
+                    "source": "finish_screen"
+                }
+
+                setChannels(channel_options);
+            </script>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

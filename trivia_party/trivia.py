@@ -51,10 +51,13 @@ def add_trivia_questions(party, remove_duplicates=True):
 
 def create_new_trivia_submission(party_round, player, question_id, answer):
     score = 0
+    print("QUESTION ID: ", question_id)
     trivia_question = TriviaQuestion.objects.get(id=question_id)
     player_submission = TriviaSubmission.objects.filter(
         party_round=party_round, player=player)
     if len(player_submission) == 0:
+        print(trivia_question.correct_answer)
+        print(answer)
         if trivia_question.correct_answer == answer:
             score = 1
         trivia_submission = TriviaSubmission(
