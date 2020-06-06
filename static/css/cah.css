@@ -3,13 +3,16 @@
     padding:10px;
 }
 
-#black_card div {
+#black_card div, .row.black_card div {
     border-radius: 15px;
     background: black;
     color:white;
     padding: 10px;
 }
 
-.white_card {
-    
+.white-card {
+
+}
+
+.cah-cards {
 }

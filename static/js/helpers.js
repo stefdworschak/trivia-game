@@ -3,8 +3,8 @@ function create_invite_link(selector, party_type){
     $(selector).click(function(){
         const element = document.createElement('input');
         const url = window.location.href;
-        element.value = url.replace('/start/','/join/').replace('/waiting','').replace('/party','');
-        element.value = element.value.replace(`/${party_type}/`,'/join/');
+        element.value = url.replace('/start/','/join/').replace('/waiting','').replace('/party','').replace('/choose','');
+        element.value = element.value.replace(`/${party_type}/`,'/join/') + `?party_type=${party_type}`;
         console.log(element.value)
         document.body.appendChild(element);
         element.select();
@@ -63,6 +63,18 @@ function processSubmission(options){
         $('#waiting').hide();
         $('#correct-answer').html(options.correct_answer)
         $('#wrong').show();
+        setTimeout(function(){
+            window.location.replace(`/${options.party_type}/${options.party_name}/party`);
+        }, 2000)
+    }
+}
+
+function processCahSubmission(winner){
+    if(winner != undefined){
+        let player_name = winner.substr(winner.length-1, 1) == s ? winner + "'" : winner + "'s";
+        $('#winner').text(player_name);
+        $('#waiting').hide();
+        $('#winner_display').show();
         setTimeout(function(){
             window.location.replace(`/${options.party_type}/${options.party_name}/party`);
         }, 2000)

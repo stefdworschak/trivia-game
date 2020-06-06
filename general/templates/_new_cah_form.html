@@ -4,6 +4,9 @@
     <input type="hidden" name="party_type" value="cah" />
     <input type="hidden" name="party_name" value="{{ hex_digest }}" />
     {% include '_general_fields_form.html' %}
+    (1 Round = 1 black card per player = 
+    <span id="player_display">2</span> x <span id="round_display">10</span> 
+    = <span id="black_card_display">20</span> black cards)
     <div style="display:none">
         <h2 class="party-header">Extra Decks</h2>
         <div class="form-group category-select">
@@ -18,3 +21,18 @@
     </div>
     <button type="submit" class="btn btn-primary create-party-btn">New Party</button>
 </form>
+
+<script>
+    $('select[name="num_players"]').on('change', function(){
+        let num_players = $(this).val();
+        $('#player_display').text(num_players);
+        let num_rounds = parseInt($('#round_display').text());
+        $('#black_card_display').text(num_players*num_rounds);
+    })
+    $('input[name="num_rounds"]').on('keyup', function(){
+        let num_rounds = $(this).val();
+        $('#round_display').text(num_rounds);
+        let num_players = parseInt($('#player_display').text());
+        $('#black_card_display').text(num_players*num_rounds);
+    })
+</script>

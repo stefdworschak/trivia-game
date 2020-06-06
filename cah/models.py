@@ -9,6 +9,8 @@ class WhiteCahCard(models.Model):
     party = models.ForeignKey(Party, related_name='white_cards', on_delete=models.CASCADE)
     player = models.ForeignKey(Player, related_name='white_cards', null=True, blank=True, on_delete=models.CASCADE)
     in_hand = models.BooleanField(default=False)
+    dealt = models.BooleanField(default=False)
+    revealed = models.BooleanField(default=False)
 
 class BlackCahCard(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
@@ -17,7 +19,8 @@ class BlackCahCard(models.Model):
     pick = models.IntegerField()
     draw = models.IntegerField()
     party_round = models.ForeignKey(Round, related_name='black_card', null=True, blank=True, on_delete=models.CASCADE)
-    winner = models.ForeignKey(Player, related_name='black_cards', null=True, blank=True, on_delete=models.CASCADE)
+    owner = models.ForeignKey(Player, related_name='owned_black_cards', null=True, blank=True, on_delete=models.CASCADE)
+    winner = models.ForeignKey(Player, related_name='won_black_cards', null=True, blank=True, on_delete=models.CASCADE)
 
 class CahSubmission(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
@@ -26,3 +29,4 @@ class CahSubmission(models.Model):
     picked_cards = models.ManyToManyField(WhiteCahCard, blank=True)
     cah_round = models.ForeignKey(Round, related_name='cah_submissions', on_delete=models.CASCADE)
     black_cah_card = models.ForeignKey(BlackCahCard, related_name='cah_submissions', on_delete=models.CASCADE)
+    revealed = models.BooleanField(default=False)

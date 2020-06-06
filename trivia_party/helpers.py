@@ -20,9 +20,10 @@ def party_to_dict(m):
     return _party
 
 
-def jumble_answers(incorrect, correct):
+def jumble_answers(incorrect, correct=None):
     new_answers = []
-    incorrect.append(correct)
+    if correct:
+        incorrect.append(correct)
     for i in range(len(incorrect)):
         choice = random.choice(incorrect)
         incorrect.remove(choice)

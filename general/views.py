@@ -11,7 +11,7 @@ import json
 import namegenerator
 
 from trivia_party.models import Player, Party
-from .helpers import add_party_content
+from .helpers import add_party_content, add_extra_party_content
 from cah.data.load_decks import load_decks
 
 
@@ -115,6 +115,7 @@ def create_or_join_party(request):
             if len(p.players.all()) == p.num_players:
                 p_upate = Party.objects.filter(party_name=party_id)
                 p_upate.update(status=1)
+                add_extra_party_content(p)
                 msg = 'game_starts'
             channel_layer = channels.layers.get_channel_layer()
             async_to_sync(channel_layer.group_send)('chat_%s' % party_id, {
@@ -126,7 +127,7 @@ def create_or_join_party(request):
             return redirect(f'/start/{data.get("party_id")}')
         elif p.players.filter(id=player.id).exists():
             request.session['player'] = player.id
-            return redirect(f'/data.get("party_type")/{data.get("party_id")}/party')
+            return redirect(f'/{data.get("party_type")}/{data.get("party_id")}/party')
         else:
             return redirect('/?error=party_full')
     #except:
@@ -157,6 +158,7 @@ def recreate_party(request):
         p.players.add(pl)
     add_party_content(p)
     Party.objects.filter(party_name=new_party_id).update(status=1)
+    add_extra_party_content(p)
     msg="party_recreated"
     channel_layer = channels.layers.get_channel_layer()
     async_to_sync(channel_layer.group_send)('chat_%s' % party_id, {
