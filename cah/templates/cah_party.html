@@ -65,7 +65,8 @@
                     if(pick_values.includes(id)){
                         for(p in pick_values){
                             if(pick_values[p] == id){
-                                $(`#white_card${Object.keys(picks).length}`).val("-1");
+                                console.log(p+1)
+                                $(`#white_card${parseInt(p)+1}`).val("-1");
                                 delete picks[pick_keys[p]];
                                 $(`#${id}`).removeClass('selected_answer');
                                 $(`#${id}`).find('.badge.badge-pill.badge-dark').remove();
@@ -74,16 +75,17 @@
                         }
                         console.log(picks)
                     } else {
-                        picks[Object.keys(picks).length + 1] = id;
+                        let num = getMin(picks);
+                        picks[num] = id;
+                        console.log(num)
                         let card_value = $(this).data('item-value');
-                        $(`#white_card${Object.keys(picks).length}`).val(card_value);
+                        $(`#white_card${num}`).val(card_value);
                         $(this).addClass('selected_answer');
-                        let span = $(` <span class="badge badge-pill badge-dark">${Object.keys(picks).length}</span>`);
+                        let span = $(` <span class="badge badge-pill badge-dark">${num}</span>`);
                         $(this).append(span);
                         if(Object.keys(picks).length == pick){
                             $('.btn.btn-primary.answer.white-card:not(.selected_answer)').attr('disabled', true);
                         }
-                        console.log(picks)
                     }
                 })
                 $('#submitAnswerForm').submit(function(event){
@@ -102,6 +104,13 @@
                     }
                 })
             })
+
+            function getMin(picks){
+                let default_picks = ["1", "2", "3", "4", "5"];
+                let new_picks = default_picks.filter(function(elem) {
+                    return !Object.keys(picks).includes(elem);})
+                return new_picks[0];
+            }
         </script>
     </div>
 </div>

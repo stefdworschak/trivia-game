@@ -98,6 +98,7 @@ def submit_card(request, party_id):
         return redirect(f'/cah/{party_id}/choose')
     return redirect(f'/cah/{party_id}/waiting')
 
+
 def finish_screen(request, party_id):
     party = Party.objects.get(party_name=party_id)
     finished_rounds = Round.objects.filter(party=party, completed=True)
@@ -124,6 +125,7 @@ def waiting_screen(request, party_id):
         'party': party,
         'ws_protocol': settings.WS_PROTOCOL
     })
+
 
 def choose_screen(request, party_id):
     party = Party.objects.get(party_name=party_id)

@@ -158,8 +158,8 @@
             "black": [
                 {
                     "content": "A curse upon thee! Many years from now, just when you think you're safe, ______ shall turn into ______.",
-                    "draw": 1,
-                    "pick": 1
+                    "draw": 2,
+                    "pick": 2
                 },
                 {
                     "draw": 1,
@@ -231,7 +231,7 @@
         {
             "black": [
                 {
-                    "content": "Believe it or not Jim Carrey can do a dead-on impression of ____.",
+                    "content": "Believe it or not Jim Carrey can do a dead-on impression of ______.",
                     "draw": 1,
                     "pick": 1
                 },
@@ -331,12 +331,12 @@
                     "pick": 1
                 },
                 {
-                    "content": "Goldfinger!\nHe's the man,\nthe man with _______.",
+                    "content": "Goldfinger!\nHe's the man,\nthe man with ______.",
                     "draw": 1,
                     "pick": 1
                 },
                 {
-                    "content": "Goodbye, ______, hello _____!",
+                    "content": "Goodbye, ______, hello ______!",
                     "draw": 2,
                     "pick": 2
                 },
@@ -1514,7 +1514,7 @@
                 {
                     "draw": 1,
                     "pick": 1,
-                    "content": "\"They\u2019re bringing drugs. They\u2019re bringing crime. They\u2019re rapists. And some, I assume, are _____.\""
+                    "content": "\"They\u2019re bringing drugs. They\u2019re bringing crime. They\u2019re rapists. And some, I assume, are ______.\""
                 },
                 {
                     "content": "Cry havoc and let slip ______!",
@@ -3140,25 +3140,25 @@
                 {
                     "draw": 1,
                     "pick": 1,
-                    "content": "Desert Bus: ___ for the children."
+                    "content": "Desert Bus: ______ for the children."
                 },
                 {
                     "draw": 1,
                     "pick": 1,
-                    "content": "I bless ___ down in Africa."
+                    "content": "I bless ______ down in Africa."
                 },
                 {
-                    "content": "Ken \"____\" Steacy went back into his archives and found his original sketches for ______.",
+                    "content": "Ken \"______\" Steacy went back into his archives and found his original sketches for ______.",
                     "draw": 2,
                     "pick": 2
                 },
                 {
                     "draw": 1,
                     "pick": 1,
-                    "content": "The four shifts at Desert Bus: Dawn Guard, Alpha Flight, Night Watch and ____."
+                    "content": "The four shifts at Desert Bus: Dawn Guard, Alpha Flight, Night Watch and ______."
                 },
                 {
-                    "content": "YOU try explaining ___ to the media!",
+                    "content": "YOU try explaining ______ to the media!",
                     "draw": 1,
                     "pick": 1
                 }
@@ -3260,7 +3260,7 @@
                     "pick": 1
                 },
                 {
-                    "content": "Your father was a powerful wizard, Harry. Before he died, he left you something very precious: ___.",
+                    "content": "Your father was a powerful wizard, Harry. Before he died, he left you something very precious: ______.",
                     "draw": 1,
                     "pick": 1
                 }
@@ -3646,7 +3646,7 @@
                 {
                     "draw": 1,
                     "pick": 1,
-                    "content": "Next week on Discovery Channel, one man must survive in the depths of the Amazon with only _____ and his wits."
+                    "content": "Next week on Discovery Channel, one man must survive in the depths of the Amazon with only ______ and his wits."
                 },
                 {
                     "content": "Science will never explain ______.",
@@ -4142,8 +4142,8 @@
             "black": [
                 {
                     "content": "______ is way better in ______ mode. (Pax East 2014)",
-                    "draw": 1,
-                    "pick": 1
+                    "draw": 2,
+                    "pick": 2
                 },
                 {
                     "content": "______: Achievement unlocked. (Pax Prime 2013)",
@@ -4864,8 +4864,8 @@
                 },
                 {
                     "content": "Because you enjoyed ______, we thought you'd like ______.",
-                    "draw": 1,
-                    "pick": 1
+                    "draw": 2,
+                    "pick": 2
                 },
                 {
                     "content": "Cancel all my meetings. We've got a situation with ______ that requires my immediate attention.",
@@ -4874,8 +4874,8 @@
                 },
                 {
                     "content": "Corruption. Betrayal. ______. Coming soon to Netflix, \"House of ______.\"",
-                    "draw": 1,
-                    "pick": 1
+                    "draw": 2,
+                    "pick": 2
                 },
                 {
                     "content": "I can't believe Netflix is using ______ to promote House of Cards.",
@@ -4936,7 +4936,7 @@
                 {
                     "draw": 1,
                     "pick": 1,
-                    "content": "When Jack White performed at the Aragon Ballroom in Chicago on Nov. 19, 2018, he surprised fans with _____."
+                    "content": "When Jack White performed at the Aragon Ballroom in Chicago on Nov. 19, 2018, he surprised fans with ______."
                 }
             ],
             "white": [
@@ -5112,7 +5112,7 @@
                 {
                     "draw": 1,
                     "pick": 1,
-                    "content": "\u2605\u2730\u2730\u2730\u2730 Do NOT go here! Found _____ in my Kung Pao chicken! "
+                    "content": "Do NOT go here! Found ______ in my Kung Pao chicken! "
                 },
                 {
                     "content": "50% of all marriages end in ______.",
@@ -5200,9 +5200,9 @@
                     "pick": 2
                 },
                 {
-                    "draw": 1,
-                    "pick": 1,
-                    "content": "And the\u00a0BAFTA\u00a0for ______ goes to ______. "
+                    "draw": 2,
+                    "pick": 2,
+                    "content": "And the BAFTA for ______ goes to ______. "
                 },
                 {
                     "content": "And what did you bring for show and tell?",
@@ -5277,7 +5277,7 @@
                 {
                     "draw": 2,
                     "pick": 2,
-                    "content": "CBC presents \"___: the Story of ___.\""
+                    "content": "CBC presents ______: the Story of ______."
                 },
                 {
                     "draw": 2,
@@ -5776,8 +5776,8 @@
                 },
                 {
                     "content": "My plan for world domination begins with ______.",
-                    "draw": 2,
-                    "pick": 2
+                    "draw": 1,
+                    "pick": 1
                 },
                 {
                     "content": "Next from J.K. Rowling: Harry Potter and the Chamber of ______.",
