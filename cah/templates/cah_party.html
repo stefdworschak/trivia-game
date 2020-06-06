@@ -1,1 +1,108 @@
-Hello
+{% extends 'base.html' %}
+{% load cah_tags %}
+{% block content %}
+<div class="player-score">
+    {{ player.player_name }}'s score: 
+    <span class="badge badge-light">
+        {% if player_score.score__sum %}{{player_score.score__sum}}{% else %}0{% endif %}
+    </span> of 
+    <span class="badge badge-light">
+        {{player_score.score__count}}
+    </span>
+    {% include '_invite_link.html' %}
+</div>
+
+<div class="container">
+    <div class="row cah-player-name-row">
+        <div class="col-12">
+            <div style="text-align:center">
+                <h5>Round {% calculate_round cr=current_round r=party.num_rounds %} of {{party.num_rounds}}
+                    (#{% calculate_turn r=party.num_rounds pl=party.num_players %} - {{black_card.owner.player_name}})</h5>
+            </div>
+            <div class="row" id="black_card">
+                <div class="col-12" style="text-align:center; font-size:24px;">
+                    {{black_card.card_text|safe}}
+                </div>
+            </div>
+            <br />
+            {% if player.id == black_card.owner.id %}
+            <h4>Waiting for players to submit picks.</h4>
+            {% else %}
+            <div class="cah-cards">
+                {% for card in current_hand %}
+                <div class="row answers">
+                    <div class="col-12"><button class="btn btn-primary answer white-card" 
+                        data-item-value="{{card.id}}" id="{{card.id}}">{{card.card_text|safe}}</button></div>
+                </div>
+                {% endfor %}
+            
+                <div class="row submit">
+                    <div class="col-12">
+                        <form action="submission" method="POST" id="submitAnswerForm">
+                        {% csrf_token %}
+                        <input type="hidden" name="white_card1" id="white_card1" value="-1" />
+                        <input type="hidden" name="white_card2" id="white_card2" value="-1" />
+                        <input type="hidden" name="white_card3" id="white_card3" value="-1" />
+                        <input type="hidden" name="round_id" value="{{round.id}}" />
+                        <input type="hidden" name="black_card_id" value="{{black_card.id}}" />
+                        <button class="btn btn-danger" style="width:100%" id="submit-answer-btn">Submit Answer</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            
+        </div>
+        {{ black_card.pick|json_script:"pick" }}
+        <script>
+            const pick = JSON.parse(document.getElementById('pick').textContent);
+            let picks = {}
+            $(document).ready(function(){
+                $('.answer').click(function(){
+                    let id = $(this).attr('id');
+                    let pick_values = Object.values(picks);
+                    let pick_keys = Object.keys(picks);
+                    if(pick_values.includes(id)){
+                        for(p in pick_values){
+                            if(pick_values[p] == id){
+                                $(`#white_card${Object.keys(picks).length}`).val("-1");
+                                delete picks[pick_keys[p]];
+                                $(`#${id}`).removeClass('selected_answer');
+                                $(`#${id}`).find('.badge.badge-pill.badge-dark').remove();
+                                $('.answer').attr('disabled', false);
+                            }
+                        }
+                        console.log(picks)
+                    } else {
+                        picks[Object.keys(picks).length + 1] = id;
+                        let card_value = $(this).data('item-value');
+                        $(`#white_card${Object.keys(picks).length}`).val(card_value);
+                        $(this).addClass('selected_answer');
+                        let span = $(` <span class="badge badge-pill badge-dark">${Object.keys(picks).length}</span>`);
+                        $(this).append(span);
+                        if(Object.keys(picks).length == pick){
+                            $('.btn.btn-primary.answer.white-card:not(.selected_answer)').attr('disabled', true);
+                        }
+                        console.log(picks)
+                    }
+                })
+                $('#submitAnswerForm').submit(function(event){
+                    if(Object.values(picks).length < pick){
+                        event.preventDefault()
+                        const options = {
+                            'title': `You need to pick ${pick} cards.`,
+                            'placement': 'top'
+                        }
+                        let tooltip_target = $('#submit-answer-btn');
+                        tooltip_target.tooltip(options);
+                        tooltip_target.tooltip('show');
+                        setTimeout(function(){
+                            tooltip_target.tooltip('dispose');
+                        },1000)
+                    }
+                })
+            })
+        </script>
+    </div>
+</div>
+{% endblock %}

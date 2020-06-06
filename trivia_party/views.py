@@ -167,6 +167,8 @@ def submit_question(request, party_id):
     score = 0
     player = Player(id=request.session.get('player'))
     party = Party.objects.get(party_name=party_id)
+    print("ROUND ID", request.POST.get('round_id'))
+    print("QUESTION ID", request.POST.get('question_id'))
     party_round = Round.objects.get(id=request.POST.get('round_id'))
     trivia_question = TriviaQuestion.objects.get(id=request.POST.get('question_id'))
     submission_score = create_submission(
@@ -174,7 +176,7 @@ def submit_question(request, party_id):
         options={
             'party_round': party_round,
             'player': player,
-            'question_id': request.POST.get('round_id'),
+            'question_id': request.POST.get('question_id'),
             'answer': request.POST.get('answer'),
         })
     total_submissions = check_total_submissions(party.party_type, party_round)

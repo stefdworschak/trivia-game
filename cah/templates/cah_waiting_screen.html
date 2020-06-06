@@ -11,43 +11,28 @@
                 <h3>Answer submitted. Waiting for the other players</h3>
 
                 <div class="waiting-btns">
-                    <a role="button" href="/trivia/{{party.party_name}}/party"
+                    <a role="button" href="/cah/{{party.party_name}}/party"
                         class="btn btn-success" id="refresh">Refresh</a>
                     <a role="button"  href="/join/{{party.party_name}}"
                        class="btn btn-warning" id="rejoin">Rejoin Party</a>
                 </div>
             </div>
-            <div class="text-center" id="correct" style="display:none">
-                <img src="{% static 'img/yeah.png' %}" width="100%" />
-                <h3>You picked the right answer!</h3>
-            </div>
-            <div class="text-center" id="wrong" style="display:none">
-                <img src="{% static 'img/oops.png' %}" width="100%" />
-                <h3>Sorry, but the right answer was: <br /> 
-                    <strong><span id="correct-answer"></span></strong>
-                </h3>
-            </div>
+            <div class="text-center" id="winner_display" style="display:none">
+                <h1>You chose <span id="winner"></span> answer!</h1>
+            </div>  
+            <div class="party-starting text-center"></div>
             {{ party.party_name|json_script:"party_name" }}
             {{ player.player_name|json_script:"player_name" }}
             {{ ws_protocol|json_script:"ws_protocol" }}
             <script>
+
                 const queryString = window.location.search;
                 const searchParams = new URLSearchParams(queryString);
-                const get_submission = searchParams.get("submission");
-                const get_correct_answer = searchParams.get("correct_answer");
-                const score = queryString.split('=')
+                const get_winner= searchParams.get("winner");
                 const party_name = JSON.parse(document.getElementById('party_name').textContent);
                 const player_name = JSON.parse(document.getElementById('player_name').textContent);
                 const ws_protocol = JSON.parse(document.getElementById('ws_protocol').textContent);
                 const connection_uri = `${ws_protocol}://${window.location.host}/ws/${party_type}/${party_name}/`; 
-                
-                const submission_options = {
-                    "submission": get_submission,
-                    "correct_answer": get_correct_answer,
-                    "party_type": party_type,
-                    "party_name": party_name
-                }
-                processSubmission(submission_options);
 
                 const channel_options = {
                     "party_type": party_type,
@@ -56,6 +41,7 @@
                     "source": "waiting_screen"
                 }
                 setChannels(channel_options);
+                processCahSubmission(winner);
             </script>
         </div>
     </div>

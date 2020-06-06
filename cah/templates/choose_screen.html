@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load cah_tags %}
+{% block content %}
+<div class="player-score">
+    {{ player.player_name }}'s score: 
+    <span class="badge badge-light">
+        {% if player_score.score__sum %}{{player_score.score__sum}}{% else %}0{% endif %}
+    </span> of 
+    <span class="badge badge-light">
+        {{player_score.score__count}}
+    </span>
+    {% include '_invite_link.html' %}
+</div>
+
+<div class="container">
+    <div class="row cah-player-name-row">
+        <div class="col-12">
+
+            <div style="text-align:center">
+                <h5>Round {% calculate_round cr=current_round r=party.num_rounds %} of {{party.num_rounds}}
+                    (#{% calculate_turn r=party.num_rounds pl=party.num_players %} - {{black_card.owner.player_name}})</h5>
+            </div>
+            
+        {% if party.num_players|all_submissions:white_card_submissions %}
+        <div id="choose_screen">
+            <nav>
+                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                    <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Start</a>
+                    {% for card in white_card_submissions %}
+                        <a class="nav-item nav-link {% if player.id != black_card.owner.id and not card.revealed %}disabled{% endif %} reveal-section" 
+                            id="nav-p{{forloop.counter}}-tab" 
+                            data-toggle="tab" href="#nav-p{{forloop.counter}}" 
+                            role="tab" aria-controls="nav-p{{forloop.counter}}" 
+                            aria-selected="false"
+                            data-player="{{card.player}}"
+                            data-card-id="{{black_card.id}}">Player {{forloop.counter}}</a>
+                    {% endfor %}
+                </div>
+            </nav>
+            
+            <div class="tab-content" id="nav-tabContent">
+                <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                    <h3>Ready to choose?!</h3>
+                </div>
+                {% for submission in white_card_submissions %}
+                <div class="tab-pane fade" id="nav-p{{forloop.counter}}" role="tabpanel" aria-labelledby="nav-p{{forloop.counter}}-tab">
+                    <div class="row answers" style="padding: 0px 20px 0px 20px">
+                        <div class="row black_card" id="black_card_{{submission.player}}">
+                            <div class="col-12" style="text-align:center; font-size:24px;">
+                                {{black_card.card_text|safe}}
+                            </div>
+                        </div>
+                    </div>
+                    {% if player.id == black_card.owner.id %}
+                    {% for whitecard in submission.white_cards %}
+                    <div class="row">
+                        <div class="col-12" style="text-align:center; font-size:24px;">
+                            <button class="btn btn-primary reveal-pick form-control"
+                                data-player="{{submission.player}}"
+                                data-card-id="{{whitecard.card_id}}"
+                                data-text="{{whitecard.card_text}}">Pick {{forloop.counter}}</button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    <div class="row">
+                        <div class="col-12" style="text-align:center; font-size:24px; margin-top:10px;">
+                            <form action="/cah/{{party.party_name}}/submit_winner" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="player_name" value="{{submission.player}}" />
+                                <input type="hidden" name="round_id" value="{{party_round.id}}" />
+                                <input type="hidden" name="black_card_id" value="{{black_card.id}}" />
+                                <button class="btn btn-success form-control submit-winner" disabled>Choose Winner</button>
+                            </form>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+            <div class="text-center" id="waiting">
+                <div class="row answers" style="padding: 0px 20px 0px 20px; margin-left:auto;margin-right:auto;"">
+                    <div class="row black_card" id="black_card_{{submission.player}}">
+                        <div class="col-12" style="text-align:center; font-size:24px;">
+                            {{black_card.card_text|safe}}
+                        </div>
+                    </div>
+                </div>
+                <div class="waiting-btns">
+                    <a role="button" href="/cah/{{party.party_name}}/party"
+                        class="btn btn-success" id="refresh">Refresh</a>
+                    <a role="button"  href="/join/{{party.party_name}}"
+                        class="btn btn-warning" id="rejoin">Rejoin Party</a>
+                </div>
+            </div>
+        {% endif %}
+            <div class="text-center" id="correct" style="display:none">
+                <img src="{% static 'img/wow.png' %}" width="100%" />
+                <h3>Your answer was picked!</h3>
+            </div>
+            <div class="text-center" id="wrong" style="display:none">
+                <img src="{% static 'img/argh.png' %}" width="100%" />
+                <h3>Sorry, but your answer was not picked: <br /> 
+                    <strong><span id="correct-answer"></span></strong>
+                </h3>
+            </div>
+            <div class="text-center" id="owner" style="display:none">
+                <h1>Next Round!</h1>
+            </div>
+            <div class="party-starting text-center"></div>
+        
+        </div>
+    </div>
+</div>
+        
+        
+        {{ party.party_name|json_script:"party_name" }}
+        {{ player.player_name|json_script:"player_name" }}
+        {{ ws_protocol|json_script:"ws_protocol" }}
+        {{ black_card.pick|json_script:"pick" }}
+        {{ white_card_submissions|json_script:"white_card_submissions" }}
+        <script>
+            //const queryString = window.location.search;
+            //const searchParams = new URLSearchParams(queryString);
+            //const get_submission = searchParams.get("submission");
+            //const get_correct_answer = searchParams.get("correct_answer");
+
+            const party_name = JSON.parse(document.getElementById('party_name').textContent);
+            const player_name = JSON.parse(document.getElementById('player_name').textContent);
+            const ws_protocol = JSON.parse(document.getElementById('ws_protocol').textContent);
+            const pick = JSON.parse(document.getElementById('pick').textContent);
+            const white_card_submissions = JSON.parse(document.getElementById('white_card_submissions').textContent);
+            console.log(white_card_submissions);
+            const connection_uri = `${ws_protocol}://${window.location.host}/ws/${party_type}/${party_name}/`; 
+            const channel_options = {
+                "party_type": party_type,
+                "party_name": party_name,
+                "connection_uri": connection_uri,
+                "source": "choose_screen",
+                "player_name": player_name
+            }
+            const socket = setChannels(channel_options);
+            enableChoosing(white_card_submissions.length, pick, socket, player_name, party_name);
+
+            /*const submission_options = {
+                "submission": get_submission,
+                "correct_answer": get_correct_answer,
+                "party_type": party_type,
+                "party_name": party_name
+            }*/
+            //processCahSubmission(submission_options);
+            revealAll(white_card_submissions);
+        </script>
+        {% if player.id == black_card.owner.id %}
+        <script>
+            handleNavigation(socket, player_name);
+            enableNavReveal(party_name);
+        </script>
+        {% endif %}
+{% endblock %}

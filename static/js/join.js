@@ -1,5 +1,11 @@
 $(document).ready(function(){
-
+    const queryString = window.location.search;
+    const searchParams = new URLSearchParams(queryString);
+    const party_type = searchParams.get("party_type");
+    if(party_type != undefined && party_type != undefined){
+        $('input[name="party_type"]').val(party_type);
+    }
+    
     $('#find_player').click(function(){
         const player_name = $('#player_name').val();
         $.ajax({

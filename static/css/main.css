@@ -83,6 +83,11 @@ select.form-control:not([size]):not([multiple]) {
     height:auto;
 }
 
+.btn.btn-primary.answer {
+    width:100%;
+    white-space: normal;
+}
+
 .party-header {
     text-align:left;
     margin: 20px auto 3px auto;
