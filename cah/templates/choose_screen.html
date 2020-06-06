@@ -19,7 +19,7 @@
 
             <div style="text-align:center">
                 <h5>Round {% calculate_round cr=current_round r=party.num_rounds %} of {{party.num_rounds}}
-                    (#{% calculate_turn r=party.num_rounds pl=party.num_players %} - {{black_card.owner.player_name}})</h5>
+                    (Turn {% calculate_turn r=current_round pl=party.num_players %} - {{black_card.owner.player_name}})</h5>
             </div>
             
         {% if party.num_players|all_submissions:white_card_submissions %}
