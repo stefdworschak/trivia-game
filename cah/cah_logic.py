@@ -50,6 +50,7 @@ def create_new_deck(party):
 def pick_cards(player):
     num_cards_in_hand = len(player.white_cards.filter(in_hand=True))
     if num_cards_in_hand < 7:
+        print(f"{player.player_name} needs {7 - num_cards_in_hand} more cards.")
         white_cards = WhiteCahCard.objects.filter(dealt=False)
         white_ids = [card.id for card in white_cards]
         for i in range(7 - num_cards_in_hand):
@@ -61,6 +62,7 @@ def pick_cards(player):
             card_to_be_updated = WhiteCahCard.objects.filter(id=picked_card_id)
             card_to_be_updated.update(dealt=True, in_hand=True)
             pass
+    print(f"{player.player_name} does not need new cards")
     return
 
 def distribute_black_cards(party):

@@ -118,9 +118,12 @@ def waiting_screen(request, party_id):
     party = Party.objects.get(party_name=party_id)
     party_round = party.rounds.filter(completed=False).first()
     player = Player.objects.get(id=request.session.get('player'))
-    total_submissions = check_total_submissions(party_round)
-    if total_submissions < int(party.num_players) - 1:
+    player_submissions = check_player_submissions(party_round, player)
+    if player_submissions < 0:
         return redirect(f'/cah/{party.party_name}/party')
+    total_submissions = check_total_submissions(party_round)
+    if total_submissions == int(party.num_players) - 1:
+        return redirect(f'/cah/{party.party_name}/choose')
     return render(request, 'cah_waiting_screen.html',{
         'party': party,
         'ws_protocol': settings.WS_PROTOCOL

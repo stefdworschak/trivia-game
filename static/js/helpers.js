@@ -69,9 +69,9 @@ function processSubmission(options){
     }
 }
 
-function processCahSubmission(winner){
+function processCahSubmission(winner, options){
     if(winner != undefined){
-        let player_name = winner.substr(winner.length-1, 1) == s ? winner + "'" : winner + "'s";
+        let player_name = winner.substr(winner.length-1, 1) == 's' ? winner + "'" : winner + "'s";
         $('#winner').text(player_name);
         $('#waiting').hide();
         $('#winner_display').show();
