@@ -28,7 +28,7 @@
 
                 const queryString = window.location.search;
                 const searchParams = new URLSearchParams(queryString);
-                const get_winner= searchParams.get("winner");
+                const get_winner= searchParams.get("picked");
                 const party_name = JSON.parse(document.getElementById('party_name').textContent);
                 const player_name = JSON.parse(document.getElementById('player_name').textContent);
                 const ws_protocol = JSON.parse(document.getElementById('ws_protocol').textContent);
@@ -41,7 +41,7 @@
                     "source": "waiting_screen"
                 }
                 setChannels(channel_options);
-                processCahSubmission(winner);
+                processCahSubmission(get_winner, channel_options);
             </script>
         </div>
     </div>
